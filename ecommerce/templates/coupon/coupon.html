@@ -1,0 +1,265 @@
+{% extends "adminside/adminbase.html" %}
+{% load static %}
+{% block dashbody %}
+
+
+
+
+
+  
+<!--Add category  Modal --> 
+<div class="modal fade" id="addCoupon" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Coupon</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+    
+          <form action="{% url 'add_coupon' %}"  enctype="multipart/form-data" method="POST">
+            {% csrf_token %}
+            <div style="width: 100px;" class="card-header category-img position-relative overflow-hidden bg-transparent border p-0">
+            </div> 
+          
+            <div class="form-outline mb-4">
+              <input name='coupon' type="text" id="form3Example3cg" class="form-control form-control-lg" />
+              <label class="form-label" for="form3Example3cg">Coupon name</label>
+            </div>
+          <div class="form-outline mb-4">
+            <input name='coupon_code'   type="text" id="form3Example3cg" class="form-control form-control-lg" />
+            <label class="form-label" for="form3Example3cg">Coupon Code</label>
+          </div>
+          <div class="form-outline mb-4">
+            <input name='discount'   type="number" id="form3Example3cg" class="form-control form-control-lg" />
+            <label class="form-label" for="form3Example3cg">Discount</label>
+          </div>
+          <div class="form-outline mb-4">
+            <input name='min_price'   type="number" id="form3Example3cg" class="form-control form-control-lg" />
+            <label class="form-label" for="form3Example3cg">Minimum price</label>
+          </div>
+          <div class="form-outline mb-4">
+            <input name='valid_from'   type="date" id="form3Example3cg" class="form-control form-control-lg" />
+            <label class="form-label" for="form3Example3cg">Start Date </label>
+          </div>
+          <div class="form-outline mb-4">
+            <input name='valid_to'   type="date" id="form3Example3cg" class="form-control form-control-lg" />
+            <label class="form-label" for="form3Example3cg">End Date</label>
+          </div>
+          <div class="form-outline mb-4">
+            <label class="form-label">Is Active</label>
+            <input type="checkbox" name='is_active' value="True" >
+          </div>
+           <div class="d-flex justify-content-center">
+              <button type="submit"
+                class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light" type="submit">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+    <!--end of add Category modal-->
+ 
+<div class="col-lg-12 grid-margin stretch-card">
+    
+  <div class="card">
+    <div class="card-body">
+        <!-- Button trigger modal -->
+<a type="button" class="btn btn-primary w-60" style="margin-top: 20px;margin-left: 10px;" data-bs-toggle="modal" data-bs-target="#addCoupon">
+    <i class="fa fa-plus">Add Coupon</i>
+  </a>
+        <div class="search-field d-none d-xl-block" style="float: right;">
+            <form class="d-flex align-items-center" action="{% url 'search_coupon' %}">
+              <div class="input-group form-control">
+                <div class=" bg-transparent border-0" style="font-size: 25px;">
+                    <a href="#"> <i class="mdi mdi-refresh"></i></a>
+                    </div>
+                
+                   
+
+              <input type="text" class="form-control bg-transparent border-0 h-100" name="keyword" placeholder="Search Coupon"> 
+              <div class=" bg-transparent border-0">
+                <button type="submit"> <i class=" mdi mdi-magnify"></i></button>
+               </div>
+              </div>
+           
+            </form>
+          </div>
+          <br>
+          <br>
+
+    
+      <h4 class="card-title">Coupons</h4>
+     
+      <table class="table table-striped">
+        <thead>
+            <tr>
+              <th scope="col">id</th>
+              <th scope="col">Coupon name</th>
+              <th scope="col">Coupon Code</th>
+              <th scope="col">Discount</th>
+              <th scope="col">Minimum price</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">End Date  </th>
+              <th scope="col">Is Active</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+      <tbody>
+        <!-- for -->
+      {% for item in coupon_item %}
+
+        <tr>
+          <td> {{forloop.counter}} </td>
+          
+          <td> {{item.coupon_name}} </td>
+          
+          <td> {{item.coupon_code}} </td>
+          <td>{{item.discount}}%</td>
+          <td>{{item.min_price}}</td>
+          <td>{{item.start_date}} </td>
+          <td>{{item.end_date}} </td>
+          <td>{{item.is_active}} </td>
+       
+          <!-- edit -->
+          <td>
+            <!-- Button trigger modal -->
+            <a type="button" class="fs-7 btn btn-warning"  data-bs-toggle="modal" data-bs-target="#confirmEdit{{forloop.counter}}">
+              <i title="" class="fa fa-edit text-black">edit</i>
+            </a> 
+            <!--Edit Modal -->
+             <div class="modal fade" id="confirmEdit{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title fs-5" id="exampleModalLabel">Edit Coupon</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form action="{% url 'edit_coupon' item.id %}"  enctype="multipart/form-data" method="POST">
+                        {% csrf_token %}
+                        <div style="width: 100px;" class="card-header category-img position-relative overflow-hidden bg-transparent border p-0">
+                        </div> 
+                      
+                        <div class="form-outline mb-4">
+                          <input name='coupon' type="text" value="{{item.coupon_name}}" id="form3Example3cg" class="form-control form-control-lg" />
+                          <label class="form-label" for="form3Example3cg">Coupon name</label>
+                        </div>
+                      <div class="form-outline mb-4">
+                        <input name='coupon_code'   type="text" value="{{item.coupon_code}}" id="form3Example3cg" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example3cg">Coupon Code</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input name='discount'   type="number" value="{{item.discount}}" id="form3Example3cg" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example3cg">Discount</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input name='min_price'   type="number" value="{{item.min_price}}" id="form3Example3cg" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example3cg">Min price</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input name='valid_from'   type="date" value="{{item.start_date}}" id="form3Example3cg" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example3cg">Valid from</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input name='valid_to'   type="date" value="{{i.end_date}}" id="form3Example3cg" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Example3cg">Valid Till</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <label class="form-label">Is Active</label>
+                        <input type="checkbox" value="{{item.is_active}}" name='is_active' >
+                      </div>
+                       <div class="d-flex justify-content-center">
+                          <button type="submit"
+                            class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light" type="submit">Save Changes</button>
+                        </div>
+                      </form>
+                  </div>
+                </div>
+              </div>
+             </div>
+
+            <!-- Button trigger modal -->
+           
+              <button type="button" class="btn btn-danger text-black" data-bs-toggle="modal" data-bs-target="#exampleModal{{forloop.counter}}">
+                Delete
+              </button>
+          </td>
+              <!-- Modal  for delete the Coupon -->
+              <div class="modal fade" id="exampleModal{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      delete Coupon {{item.coupon_name}}
+                    </div>
+                    <div class="modal-footer">
+                        <!-- one here -->
+                      <form action="{% url 'delete_coupon' item.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Confirm</button>
+                      </form>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+          </td>
+          <!--deleting ended-->
+          {% endfor %}
+       </tr>
+  
+      </tbody>
+      </table>
+    
+    
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="errorModalLabel">Error Message</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="errorContent">
+          <!-- Error messages will be inserted here dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+   
+        $(document).ready(function() {
+          // Check if there are error messages
+          var errorMessages = document.querySelectorAll(".alert-danger");
+          if (errorMessages.length > 0) {
+            // Construct the error message content
+            var errorMessageContent = "";
+            errorMessages.forEach(function(errorMessage) {
+              errorMessageContent += errorMessage.innerHTML + "<br>";
+            });
+        
+            // Set the error message content in the modal
+            document.getElementById("errorContent").innerHTML = errorMessageContent;
+        
+            // Trigger the modal
+            $("#errorModal").modal("show");
+          }
+        });
+        
+        
+  </script>
+
+{% endblock %}

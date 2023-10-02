@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+
+
+  <main>
+      <!-- Hero Area Start-->
+      <div class="slider-area ">
+          <div class="single-slider slider-height2 d-flex align-items-center">
+              <div class="container">
+                  <div class="row">
+                      <div class="col-xl-12">
+                          <div class="hero-cap text-center">
+                              <h2>
+                                Wish List 
+                              </h2>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!--================Cart Area =================-->
+      <section class="cart_area section_padding">
+        <div class="container">
+          <div class="cart_inner">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in product %}
+                  <tr>
+                    <td>
+                      
+                      <div class="media">
+                        <div class="d-flex">
+                    
+                          <img src= "{{i.product.product_image.url}}" alt="image" />
+                                                
+                        </div>
+                        <div class="media-body">
+                          <p> {{i.product.product_name}} </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <h5>$ {{i.product.product_price}} </h5>
+                    </td>
+                    
+                    <td>
+                      <form method="POST" action="{% url 'delete_wishlist' i.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">
+                          Remove 
+                        </button>
+                      </form>
+                    </td>
+
+                  </tr>
+                  <tr>
+                    <td>
+                  </tr>
+                 {% endfor %}
+                </tbody>
+              </table>
+           
+              <div class="checkout_btn_inner float-right">
+                <a class="btn_1" href="{% url 'home:shop' %}">Continue Shopping</a>
+              </div>
+            </div>
+          </div>
+      </section>
+      <!--================End Cart Area =================-->
+  </main>
+
+
+
+<!-- Error Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="errorModalLabel">Messages</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <p id="errorMessage"></p>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+{% if messages %}
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          // Check if there are error messages
+          var errorMessages = "{% for message in messages %}{{ message }}{% endfor %}".trim();
+          if (errorMessages !== "") {
+              // Set the error message in the modal
+              document.getElementById('errorMessage').textContent = errorMessages;
+
+              // Show the error modal
+              var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+              errorModal.show();
+          }
+      });
+  </script>
+{% endif %}
+
+
+
+
+
+<!-- SweetAlert CDN -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+      <script src="{% static ' js/main.js' %}"></script>
+      <script>
+        function add(button){
+          var productcount = button.parentElement.querySelector('#productcount');
+          var productid = button.parentElement.querySelector('#productid');
+          var productprice = button.parentElement.querySelector('#productprice');
+          var producttotal = button.parentElement.querySelector('#totalprice');
+          var totalprice = parseInt(producttotal.innerHTML) + parseInt(productprice.value);
+          var qty = parseInt(productcount.value)+1;
+          var id = productid.value;
+          $.ajax({
+            method:"POST",
+            url:"{% url 'update_cart' %}",
+            data: {
+              'product_count': qty,
+              'product_id': id,
+              'product_total':totalprice,
+              csrfmiddlewaretoken: '{{csrf_token}}'
+            },
+            success: function(res){
+              producttotal.innerHTML = `${parseInt(res.total)}`
+            }
+          })
+          productcount.value = parseInt(productcount.value) + 1; 
+        }
+        function sub(button){
+          var productcount = button.parentElement.querySelector('#productcount');
+          var productid = button.parentElement.querySelector('#productid');
+          var productprice = button.parentElement.querySelector('#productprice');
+          var producttotal = button.parentElement.querySelector('#totalprice');
+          var totalprice = parseInt(producttotal.innerHTML) - parseInt(productprice.value);
+          var qty = parseInt(productcount.value)-1;
+          var id = productid.value;
+          $.ajax({
+            method:"POST",
+            url:"{% url 'update_cart' %}",
+            data: {
+              'product_count': qty,
+              'product_id': id,
+              'product_total':totalprice,
+              csrfmiddlewaretoken: '{{csrf_token}}'
+            },
+            success: function(res){
+              producttotal.innerHTML = `${parseInt(res.total)}`
+            }
+          })
+          productcount.value = parseInt(productcount.value) - 1; 
+        }
+      </script>
+
+
+{% endblock content %}

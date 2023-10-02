@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static  %}
+{% block content %}
+
+
+<style>
+    .column {
+        padding: 20px;
+        background-color: #f8f9fa;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+    
+    .product-title {
+        color: #343a40;
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    
+    .product-price, .product-brand, .product-category {
+        color: #e44d26;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .product-description {
+        color: #495057;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .divider {
+        border-top: 1px solid #dee2e6;
+        margin: 10px 0;
+    }
+    
+    .add_to_cart {
+        margin-top: 20px;
+    }
+    
+    .btn_3 {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #e44d26;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn_3:hover {
+        background-color: #333;
+    }
+    
+    
+</style>
+
+    <link rel="stylesheet" href="{% static 'owlcarousel/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'owlcarousel/owl.theme.default.min.css' %}">
+
+
+    <main>
+
+        <!--================Single Product Area =================-->
+       
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="product_image_area">
+                        <div class="product_img_slide owl-carousel" style="width: 600px; height: 600px;">
+                            {% for product_image in image_product %}
+                                <div class="single_product_img">
+                                    <img src="{{product_image.image.url }}" alt="Product Image" class="img-fluid">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-flex align-items-center">
+                    <div class="column">
+                        <h1 class="product-title">Product Name : {{product.product_name}}</h1>
+                        <hr class="divider">
+                        <h3 class="product-price"> Product Price : {{product.product_price}}</h3>
+                        <hr class="divider">
+                        <h3 class="product-brand"> Product Brand: {{product.product_brand}}</h3>
+                        <hr class="divider">
+                        <h3 class="product-category"> Product Category : {{product.product_category.name}}</h3>
+                
+                        <p class="product-description"> Product Description : {{product.product_brand.brand_discription}}</p>
+                
+                
+                        <div class="add_to_cart">
+                            <a href="{% url 'add_cart'  %}" class="btn_3">Add to Cart</a>
+                        </div>
+                    </div>
+                </div>                
+                </div>
+            </div>
+        </div>
+        
+   
+    </main>
+
+    <script src="{% static 'owlcarousel/owl.carousel.min.js' %}"></script>
+<script>
+    $(document).ready(function() {
+        $(".product_img_slide").owlCarousel({
+            // Owl Carousel configuration options
+            // ...
+        });
+    });
+    
+</script>
+
+{% endblock content %}
