@@ -13,4 +13,6 @@ urlpatterns = [
     path('user_search',views.user_search , name='user_search'),
     path('user_block_status',views.user_block_status , name='user_block_status'),
     path('adminpage',views.adminpage, name='adminpage'),
+
+    
 ]

@@ -2,6 +2,34 @@
 {% load static %}
 {% block content %}
 
+<style>
+  .referral-section {
+    border: 2px dashed #333;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.referral-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid #333;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+button {
+    cursor: pointer;
+    padding: 5px 10px;
+    margin-left: 10px;
+    background-color: #007BFF;
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+}
+
+</style>
 
 <style>
   .navbar {
@@ -30,8 +58,9 @@
   }
 
 </style>
-{% comment %} 
-<link rel="stylesheet" href="{% static 'cart/css/styles.min.css'%}"/> {% endcomment %}
+
+
+
 <br>
 <br>
 
@@ -58,15 +87,13 @@
           <div class="card border rounded mb-4">
             <div class="card-body   text-center">
              <div class="text-center mb-2 container" style="width: 100px;height: 100px; border-radius: 50%;padding: 0; overflow: hidden;">
-               {% if image %} 
-              
-              <img class="img-fluid" src="{{i.image.url}}" alt="img"
+            {% if user.images  %}
+              <img class="img-fluid" src="{{user.images.url}}" alt="No Image"
               class="rounded-circle img-fluid" style="width: 100%; height: 100%; object-fit: cover;">
-             
-              {% else %}
+             {% else %}
                 <img class="w-100 h-100" src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
                 class="rounded-circle img-fluid">  
-                 {% endif %} 
+              {% endif %}
              </div>
              <a  data-bs-toggle="modal" data-bs-target="#changedp">
              <button class="btn_1" style="font-size: 10px;">Change</button>  
@@ -123,19 +150,32 @@
                     <div class="card-body">
                       <div class="wallet-info">
                       <h3>wallet</h3>
-                        {% if wallets %}
-                        {% for wallet in wallets %}
+                        {% if wallet %}
                         <h5>Available Balance:</h5>
                         <h5 class="wallet-balance">₹{{ wallet.wallet }}</h5>
-                        {% endfor %}
                         {% else %}
                         Available Balance:₹ 0.00
                         {% endif %}
+                        <a href="{% url 'wallet' %}" class="btn_3 ">Go To Wallet</a>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+
+              <div class="referral-section">
+                <h2>Your Referral Code</h2>
+                <div class="referral-box">
+                  {% if user is not none %}
+                    <span id="referralCode"> {{user.refferal_code }} </span>
+                    <button onclick="copyReferralCode()">Copy Code</button>
+                  {% else %}
+                  <span id="referralCode"> No Offer </span>
+                  {% endif %}
+                </div>
+                <p>Share your referral code with friends and both of you can earn rewards when they sign up!</p>
+            </div>
+
             </div>
             </div>
           </div>
@@ -246,17 +286,16 @@
               </button>
             </div>
             {% if request.user %}
-         
             <div class="modal-body">
               <form action="{% url 'edit_profile' %}" enctype="multipart/form-data" method="POST">
                 {% csrf_token %}
                 <div class="form-outline mb-4">
-                  <input value="{{i.username}}"  name='username'  type="text" id="id_usernam" class="form-control form-control-lg" />
+                  <input value="{{user_auth.username}}"  name='username'  type="text" id="id_usernam" class="form-control form-control-lg" />
                   <label class="form-label" for="form3Example3cg">Username</label>
                 </div>  
 
                 <div class="form-outline mb-4">
-                  <input  name='email' value="{{i.email}}" type="email" id="form3Example3cg" class="form-control form-control-lg" />
+                  <input  name='email' value="{{user_auth.email}}" type="email" id="form3Example3cg" class="form-control form-control-lg" />
                   <label class="form-label" for="form3Example3cg">Email</label>
                 </div>
                 <div class="d-flex justify-content-center">
@@ -264,7 +303,6 @@
                     class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light">Save Changes</button>
                 </div>
               </form>
-          
               {% endif %}
         </div>
       </div>
@@ -291,7 +329,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="" method="POST" class="justify-content-between">
+        <form action="{% url 'add_address' %}" method="POST" class="justify-content-between">
           {% csrf_token %}
           <div class="row mb-1">
             <div class="col-lg-6">
@@ -652,4 +690,22 @@
   }
   </script> {% endcomment %}
   
+<script>
+  function copyReferralCode() {
+    var range = document.createRange();
+    range.selectNode(document.getElementById('referralCode'));
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    Swal.fire({
+      icon: 'success',
+      title: '',   
+      text: 'Successfully Copy',
+      footer: '<a href="">Why do I have this issue?</a>'
+    })
+}
+
+</script>
+
+
   {% endblock content %}

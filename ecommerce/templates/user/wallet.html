@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+  .wallet-container {
+    background-color: #f8f9fa;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.user-profile img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.balance-section {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    padding: 20px 30px;
+    margin-top: 30px;
+    color: white;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.balance-header i {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.balance-amount {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.transaction-section {
+    margin-top: 30px;
+}
+
+.transaction-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.transaction-card.credit {
+    border-left: 5px solid #4caf50;
+}
+
+.transaction-card.debit {
+    border-left: 5px solid #f44336;
+}
+
+.transaction-card i {
+    font-size: 1.5em;
+    margin-right: 20px;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .user-profile {
+        flex-direction: row;
+    }
+    
+    .user-profile img {
+        margin-right: 20px;
+        margin-bottom: 0;
+    }
+
+    .balance-section {
+        flex-direction: row;
+    }
+
+    .balance-header i {
+        margin-bottom: 0;
+        margin-right: 10px;
+    }
+}
+
+</style>
+
+<style>
+  .transaction-container {
+    width: 90%;
+    max-width: 800px;
+    margin: 2rem auto;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.transaction-container h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.transaction-table thead th {
+    text-transform: uppercase;
+    padding: 0.75rem 0.5rem;
+    background-color: #333;
+    color: white;
+    border-bottom: 2px solid #ddd;
+}
+
+.transaction-table tbody td {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.transaction-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+@media screen and (max-width: 600px) {
+    .transaction-table thead {
+        display: none; /* hide headers on small devices */
+    }
+
+    .transaction-table tbody td {
+        display: block; /* convert table row into block */
+        text-align: right;
+        padding-left: 50%; /* large padding which gets covered by label */
+        position: relative;
+        margin-bottom: 0.625em;
+    }
+
+    .transaction-table tbody td:before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        content: attr(data-label);
+        text-align: left;
+        font-weight: bold;
+    }
+
+    /* Add data-labels for responsiveness */
+    .transaction-table td:nth-of-type(1):before { content: "Date"; }
+    .transaction-table td:nth-of-type(2):before { content: "Reason"; }
+    .transaction-table td:nth-of-type(3):before { content: "Payment Method"; }
+    .transaction-table td:nth-of-type(4):before { content: "Amount"; }
+    .transaction-table td:nth-of-type(5):before { content: "Description"; }
+}
+.positive-amount {
+  color: green;
+}
+
+.negative-amount {
+  color: red;
+}
+</style>
+
+<div class="wallet-container">
+
+  <div class="user-profile">
+    {% if user_auth is not none %}
+      <img src=" {{ user_auth.image.url }} " alt="Image">
+    {% else  %}
+    <img class="w-5 h-5" src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+    class="rounded-circle img-fluid"> 
+    {% endif %}
+      <h3> {{wallet.user.username}} </h3>
+  </div>
+
+  <div class="balance-section">
+      <div class="balance-header">
+          <i class="fas fa-wallet"></i>
+          <h2>Wallet Balance</h2>
+      </div>
+      <p class="balance-amount">${{wallet.wallet}} </p>
+  </div>
+
+  <div class="transaction-container">
+    <h2>Your Wallet Transaction History</h2>
+    <table class="transaction-table">
+      {% if tra %}
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Reason</th>
+                <th>Payment Method</th>
+                <th>Amount</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+          {% for i in tra %}
+
+                <tr>
+                    <td> {{i.timestamp}} </td>
+                    <td> {{i.reason}} </td>
+                    <td> {{i.payment_method}}  </td>
+                    <td class="{% if i.amount >= 0 %}positive-amount{% else %}negative-amount{% endif %}">+{{ i.amount }}</td>
+                    <td> {{i.description}} </td>
+                </tr>
+            {% endfor  %}
+
+        </tbody>
+    </table>
+    {% else %}
+    <p>You have no transactions in your wallet history.</p>
+    {% endif %}
+</div>
+
+
+</div>
+
+
+    
+{% endblock%}

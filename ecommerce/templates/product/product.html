@@ -82,6 +82,23 @@
                     </form>
                 </div>
                 
+
+                <div class="row gx-3">
+                    <div class="col-lg-2 col-6 col-md-3">
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#addCategory">
+                            <button type="button" class="btn btn-primary"><i class="ti ti-plus"></i> Add Product</button>
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-6 me-auto">
+                        <form action="{% url 'search_product' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" placeholder="Search..." name="search" class="form-control" />
+                                <button type="submit" class="btn btn-primary"><i class="ti ti-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                    
                 
             </div>
         </header>
@@ -93,22 +110,7 @@
                 <table class="table table-hover">
                     <thead>
                         
-                        <div class="row gx-3">
-                            <div class="col-lg-2 col-6 col-md-3">
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#addCategory">
-                                    <button type="button" class="btn btn-primary"><i class="ti ti-plus"></i> Add Product</button>
-                                </a>
-                            </div>
-                            <div class="col-lg-4 col-md-6 me-auto">
-                                <form action="{% url 'search_product' %}" method="POST">
-                                    {% csrf_token %}
-                                    <div class="input-group">
-                                        <input type="text" placeholder="Search..." name="search" class="form-control" />
-                                        <button type="submit" class="btn btn-primary"><i class="ti ti-search"></i></button>
-                                    </div>
-                                </form>
-                            </div>
-                            
+ 
                             
                         </div>
                         <tr class="text-uppercase">
@@ -117,6 +119,7 @@
                             <th scope="col">Product Price</th>
                             <th scope="col">Product Image</th>
                             <th scope="col">Brand</th>
+                            <th scope="col">Offer</th>
                             <th scope="col">Category</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">views</th>
@@ -142,6 +145,7 @@
                             </td>
                                 
                                 <td><b> {{user.product_brand.brand_name}}  </b></td>
+                                <td><b> {{user.offer.offer_name}}  </b></td>
                                 <td><b> {{user.product_category.name}}  </b></td>
                                 <td><b>{{ user.product_quantity}} </b> </td>
                             <!-- <td><b>{{ Action }}</td> -->
@@ -230,13 +234,36 @@
                                                         <select class="form-select" name="Product_brand">
                                                             {% for i in brand %}
                                                                 {% if i.brand == user.Brand.brand %}
-                                                                    <option value="{{ i.id }}" selected>{{ i.product_brand.brand_name }}</option>
+                                                                    <option value="{{ i.id }}" selected>{{ i.brand_name }}</option>
                                                                 {% else %}
-                                                                    <option value="{{ i.id }}">{{i.product_brand.brand_name}}</option>
+                                                                    <option value="{{ i.id }}">{{i.brand_name}}</option>
                                                                 {% endif %}
                                                             {% endfor %}
                                                         </select>
                                                     </div>
+                                                    <div class="form-outline mb-4">
+                                                        <label class="form-label" for="form3Example3cg">Product Offer</label>
+                                                        <select class="form-select" name="offer">
+                                                            {% for i in offer %}
+                                                                {% if i.brand == user.Brand.brand %}
+                                                                    <option value="{{ i.id }}" selected>{{ i.offer_name }}</option>
+                                                                {% else %}
+                                                                    <option value="{{ i.id }}">{{i.offer_name}}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="form-outline mb-4">
+                                                        <label class="form-label" for="form3Example3cg">Category</label>
+                                                        <select class="form-select" name="product_category">
+                                                            {% for c in category %}
+                                                            <option value="{{c.id}}">{{c.name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+
+
                                                     <div class="form-outline mb-4"> 
                                                         <label class="form-label"
                                                             for="form3Example3cg">Quantity</label>
@@ -341,6 +368,15 @@
                         </select>
                     </div>
                     <div class="form-outline mb-4">
+                        <label class="form-label" for="form3Example3cg">Offer</label>
+                        <select class="form-select" name="offer">
+                            {% for c in offer %}
+                            <option value="{{c.id}}">{{c.offer_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-outline mb-4">
                         <label class="form-label" for="form3Example3cg">Category</label>
                         <select class="form-select" name="product_category">
                             {% for c in category %}
@@ -369,23 +405,6 @@
 
 
 
-<!-- Error Modal -->
-<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="errorModalLabel">Messages</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p id="errorMessage"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 

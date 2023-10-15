@@ -73,7 +73,7 @@
                             {% for i in order_item %}
 
                             <tr class="text-uppercase">
-                                <td><b>{{ i.id }}</td>
+                                <td><b>{{forloop.counter }}</td>
                                 <td><b>{{ i.user.username }}</td>
                                 <td><b>{{ i.created_at}}</td>
                                 <td><b>{{ i.total_price }}</td>

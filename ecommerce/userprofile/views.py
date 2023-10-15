@@ -1,22 +1,37 @@
 from django.shortcuts import render , redirect
 from .import views
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Address
+from .models import Address , Wallet , Transaction
 from django.contrib.auth.models import User
 from django.contrib import messages 
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import authenticate
+from userauth.models import Customer
 # Create your views here.
 
 def userprofile(request):
+    wallet = 0
+    try:
+        wallet = Wallet.objects.filter(user = request.user).first()
 
-    
+    except Wallet.DoesNotExist:
+        wallet = 0
+     
+    try:
+        user = Customer.objects.get(id = request.user.id)
+    except Customer.DoesNotExist:
+        user = None
+    user_auth = User.objects.get(id = request.user.id)
+
+
     context = {
         'address': Address.objects.filter(user=request.user,is_available=True),
+        'wallet':wallet,
+        'user':user,
+        'user_auth':user_auth
         
-    }
-    print(context,'----------------------------------------------------')
+        }
     return render(request , 'user/userprofile.html' , context)
 
 
@@ -82,7 +97,7 @@ def add_address(request):
             pincode = pincode,
             order_note = order_note,
         )
-        print(address_item)
+        print(address_item,'sueeeeeeeeeeeeeee')
         address_item.save()
         messages.success(request, 'Succesffully added')
         return redirect('userprofile')
@@ -221,19 +236,37 @@ def delete_address(request,deleteaddress_id):
     
 def edit_image(request):
     if request.method == 'POST':
-        image = request.FILES.get('user_image')
-        
+        images = request.FILES.get('user_image')
         #validatings the field is empty
-        if image.strip() == '':
+        if image is None:
             messages.error(request  ,'Image fields is empty')
             return redirect('userprofile')
-        address = Address.objects.filter(user = request.user).first()
-        if address:       
-            address.image = image
-            address.save()
-            messages.success(request , 'Successfully updated Image')
+        
+        image = User.objects.get(id = request.user.id)
+        if image:
+            cus = Customer.objects.get(username = image)
+            cus.images = images
+            cus.save()
+            messages.success(request,'Successfully Changed')
             return redirect('userprofile')
-        else:
-            messages.error(request, 'Image is not found')
     else:
         return redirect('userprofile')
+    
+
+
+def wallet(request):
+    wallet = Wallet.objects.filter(user = request.user).first()
+    tra = Transaction.objects.filter(wallet = wallet)
+    
+    try:
+        user = Customer.objects.get(id = request.user.id)
+    except Customer.DoesNotExist:
+        user = None
+    context = {
+        'wallet':wallet,
+        'tra':tra,
+        'user_auth':user
+    }
+    return render(request,'user/wallet.html',context)
+
+

@@ -1,0 +1,57 @@
+{% extends "base.html" %} 
+{% load static %}
+{% block content %}
+
+</main>
+<!-- Products Display (On the right) -->
+    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12">
+        <div class="row" id="filtered_product">
+            {% for i in product %}
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                <div class="single-popular-items mb-50 text-center">
+                    <div class="popular-img">
+                        {% with product_image=i.productimage_set.first %}
+                        {% if product_image %}
+                        <img src="{{ product_image.image.url }}" alt="">
+                        {% endif %}
+                        {% endwith %}
+                        <div class="img-cap">
+                            <form method="POST" action="{% url 'add_cart' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ i.id }}">
+                                <input type="hidden" name="product_count" value="1">
+                                <button type="submit" style="background-color: red; width: 150px; height: 50px;">Add to Cart</button>
+                            </form>
+                        </div>
+                        <!-- <div class="favorit-items">
+                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable wish-list" data-product_id="{{ i.id }}">
+                                <span class="flaticon-heart" id="heart-{{ i.id }}"></span>
+                            </a>
+                        </div> -->
+                    </div>
+                    <div class="popular-caption">
+                        <h3><a href="{% url 'product_view' i.id %}">{{ i.product_name }}</a></h3>
+                        {% if i.offer or i.brand.offer %}
+                        <span>₹{{ i.get_offer }}</span>
+                        <del>₹ {{ i.product_price }}</del>
+                        {% else %}
+                        <span class="line-through">₹{{ i.product_price }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+        </div>
+        <div class="row">
+            {% endif %} 
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+</div>
+
+    <!-- End Nav Card -->
+</section>
+</main>
+
+{% endblock %}

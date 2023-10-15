@@ -12,6 +12,7 @@ urlpatterns = [
 
     path('apply_coupon',views.apply_coupon , name='apply_coupon'),
 
-    path('placeorder',views.placeorder, name='placeorder')
+    path('placeorder',views.placeorder, name='placeorder'),
+    path('proceed-to-pay',views.rezorpaycheck , name='proceed-to-pay'),
 
 ]

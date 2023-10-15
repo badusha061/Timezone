@@ -25,6 +25,7 @@ class CouponUsage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
     total_price = models.BigIntegerField()
+    discount_amount  = models.BigIntegerField(blank=True, null=True)
     used = models.BooleanField()
     useage_date = models.DateField( auto_now=True)
 

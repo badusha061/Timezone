@@ -23,7 +23,6 @@
                 <button type="submit"> <i class=" mdi mdi-magnify"></i></button>
                </div>
               </div>
-              
             </form>
           </div>
           <br>
@@ -40,6 +39,7 @@
               <th scope="col">Total Amount</th>
               <th scope="col">payment mode</th>
               <th scope="col">View Order</th>
+              <th scope="col">Invoice</th>
               <th scope="col">Status</th>
             </tr>
           </thead>
@@ -51,10 +51,26 @@
           <td> {{i.total_price}}   </td>
           <td> {{i.payment_mode}} </td>
           <td>
-            <a href="{% url 'order_views' %}" class="btn btn-outline-dark">View order details</a>
+            <a href="{% url 'order_views' i.id %}" class="btn btn-outline-dark">View order details</a>
           </td>
+          <td>
+            <a href="{% url 'home:invoice' i.id %}" class="btn btn-outline-dark">Invoice Download</a>
+          </td>
+        
           <td >
-            <span class="badge p-2 my-2 text-secondary" style="font-size: medium;">Pending</span>
+            {%  if i.od_status   == 'Pending' %}
+            <span class="badge p-2 my-2 text-secondary" style="font-size: medium;"> {{i.od_status}} </span>
+            {% elif i.od_status == 'Processing' %}
+            <span class="badge p-2 my-2 text-secondary" style="font-size: medium;"> {{i.od_status}} </span>
+            {% elif i.od_status == 'Shipped' %}
+            <span class="badge p-2 my-2 text-secondary" style="font-size: medium;"> {{i.od_status}} </span>
+            {% elif i.od_status == 'Delivered' %}
+            <span class="badge p-2 my-2 text-secondary" style="font-size: medium;"> {{i.od_status}} </span>
+            {% elif i.od_status == 'Cancelled' %}
+            <span class="badge p-2 my-2 text-secondary" style="font-size: medium;"> {{i.od_status}} </span>
+            {% elif i.od_status == 'Return' %}
+            <span class="badge p-2 my-2 text-secondary" style="font-size: medium;"> {{i.od_status}} </span>
+            {% endif %}
         </td>
        </tr>
        {% endfor %}

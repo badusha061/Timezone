@@ -24,55 +24,53 @@
 <div class="card">
     <div class="card-body">
         <div class="row">
-            {% if address %}
+            {% if order %}
             <div class="col-md-5">
                 <h5 class="card-title fw-semibold mb-4"> ORDER ADDRESS</h5>
                 <div class="card">
-
+                    {% for item in order %}
                     <div class="card-body">
                         <table>
-                            {% for item in address %}
                             <tr>
                                 <td><strong>First Name</strong></td>
-                                <td>:{{item.first_name}}</td>
+                                <td>:{{item.address.first_name}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Last Name</strong></td>
-                                <td>:{{item.last_name}}</td>
+                                <td>:{{item.address.last_name}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Phone Number</strong></td>
-                                <td>:{{item.phone}}</td>
+                                <td>:{{item.address.phone}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Email</strong></td>
-                                <td>:{{item.email}}</td>
+                                <td>:{{item.address.email}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Address</strong></td>
-                                <td>:{{item.address}}</td>
+                                <td>:{{item.address.address}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Country</strong></td>
-                                <td>:{{item.country}}</td>
+                                <td>:{{item.address.country}}</td>
                             </tr>
                             <tr>
                                 <td><strong>City</strong></td>
-                                <td>:{{item.city}}</td>
+                                <td>:{{item.address.city}}</td>
                             </tr>
                             <tr>
                                 <td><strong>State</strong></td>
-                                <td>:{{item.state}}</td>
+                                <td>:{{item.address.state}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Pincode</strong></td>
-                                <td>:{{item.pincode}}</td>
+                                <td>:{{item.address.pincode}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Order note</strong></td>
-                                <td>:{{item.order_note}}</td>
+                                <td>:{{item.address.order_note}}</td>
                             </tr>
-                            {% endfor %}
                         </table>
                     </div>
                 </div>
@@ -85,7 +83,6 @@
 
                     <div class="card-body">
                         <table>
-                            {% for item in order %}
                             <tr>
                                 <td><strong>Order id</strong></td>
                                 <td>:{{item.id}}</td>

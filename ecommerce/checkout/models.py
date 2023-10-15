@@ -29,9 +29,9 @@ class Order(models.Model):
         return self.created_at + timedelta(days=7)
 
     def __str__(self):
-        return f"{self.id, self.tracking_no}"
+        return f"{self.id, self.user.username}"
     
-class OrderItem(models.Model):
+class   OrderItem(models.Model):
     user = models.ForeignKey( User,on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product =models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -47,3 +47,5 @@ class OrderItem(models.Model):
     }
     status = models.CharField(choices=orderstatuses, max_length=150,default='pendings')
 
+    def __str__(self) -> str:
+        return self.user.username

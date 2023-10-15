@@ -1,340 +1,163 @@
-{% extends "base.html" %}
-{% load static %}
-{% block content %}
-
-<style>
-  .coupon {
-    border: 5px dotted #bbb; /* Dotted border */
-    width: 80%;
-    border-radius: 15px; /* Rounded border */
-    margin: 0 auto; /* Center the coupon */
-    max-width: 600px;
-  }
-  
-  .container {
-    padding: 2px 16px;
-    background-color: #f1f1f1;
-  }
-  
-  .promo {
-    background: #ccc;
-    padding: 3px;
-  }
-  
-  .expire {
-    color: red;
-  }
-</style>
-
-<style>
-  /* Add the following styles to your existing styles in the <style> tag */
-
-/* General Styles */
-body {
-  font-family: 'Arial', sans-serif;
-  color: #333;
-}
-
-/* Heading Styles */
-h2 {
-  color: #1a73e8; /* Blue color for headings */
-}
-
-/* Button Styles */
-.btn {
-  background-color: #1a73e8;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-/* Input Styles */
-input[type="text"], input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  box-sizing: border-box;
-}
-
-/* Address Section Styles */
-.address-list {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.address-box {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin: 10px;
-  border-radius: 5px;
-}
-
-/* Coupon Section Styles */
-.coupon {
-  background-color: #f8f8f8;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 20px;
-  margin: 20px 0;
-}
-
-/* Messages Section Styles */
-div.message {
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 5px;
-}
-
-div.message.success {
-  background-color: #4caf50;
-  color: #fff;
-}
-
-div.message.error {
-  background-color: #f44336;
-  color: #fff;
-}
-  
-</style>
+{% extends "base.html" %} {% load static %} {% block content %}
 
 
-    <main>
-        <!--================Checkout Area =================-->
-        <section class="checkout_area section_padding ">
-          <div class="row d-flex">
-            <div class="container">
-              <form action="{% url 'placeorder' %}" method="post" id="orderform" >
+
+<main>
+    <!--================Checkout Area =================-->
+    <section class="checkout_area section_padding">
+        <div class="container">
+            <form action="{% url 'placeorder' %}" method="post" id="orderform">
                 {% csrf_token %}
-              <div class="returning_customer">
-                <div class="check_title d-flex">
-                  <div class="col-lg-6">
-                    <div class="order_box">
-                      <h2>Your Order</h2>          
-                      <ul class="list">
-                        <li>
-                          <a href="{% url 'product_list' %}">Product
-                          
-                            <span>Total</span>
-                            {% for item in cart_item%}
-                            
-                          </a>
-                        </li>
-                        <li>
-
-                              <a href="#"> {{item.product.product_name}}
-                          
-                            <span class="middle"> {{item.quantity}} </span>
-                            <span class="last">$ {{item.total_price}} </span>
-                          </a>
-                        </li>
-                        {% endfor %}
-            
-                        <li>
-                          <a href="#">Subtotal
-                            <span  >$ {{total}} </span>
-                          </a>
-                        </li>
-                        <li>
-                          <a href="#">Shipping
-                            <span>Flat rate: $50.00</span>
-                          </a>
-                        </li>
-                        <li>
-                        
-                          <a href="#">Coupon
-                            <span></span> 
-                            <form id="apply-coupon-form">                             
-                              <input type="text" id="coupon-code" name="coupon-code" placeholder="Enter coupon code">
-                              <button type="submit" id="apply-coupon-button" class="btn btn-primary" >Apply Coupon</button>
-                              <div id="coupon-message"></div>
-
-                              
-                          
-                          
-                          
-                          </a>
-                        </li>
-
-                        <li>
-                         
-                          <a href="#">Total
-                            {% if grand_total %}
-                            <span  >$ {{grand_total}} </span>
-                            <input type="hidden" id="grand-total" value="{{total}}" >
-                            {% else %}
-                            <span  >$ {{total}} </span>
-                            <input type="hidden" id="grand-total" value="{{total}}" >
-                            {% endif %}
-                          </a>
-                       
-                        </li>
-                      </ul>
-                      <div class="payment_item">
-                        <div class="radion_btn">
-                          <input type="radio" id="f-option5" name="payment-method" value="cod" />
-                          <label for="f-option5">Cash On Delivery</label>
-                          <div class="check"></div>
-                        </div>
-                        <p>
-                          Please send a check to Store Name, Store Street, Store Town,
-                          Store State / County, Store Postcode.
-                        </p>
-                      </div>
-                      
-                      <div class="payment_item active">
-                        <div class="radion_btn">
-                          <input type="radio" id="f-option6" name="payment-method" value="paypal" />
-                          <label for="f-option6">Paypal </label>
-                          <img src="" alt="" />
-                          <div class="check"></div>
-                        </div>
-                        <p>
-                          Please send a check to Store Name, Store Street, Store Town,
-                          Store State / County, Store Postcode.
-                        </p>
-                      </div>
-                      <div class="creat_account">
-                        <input type="checkbox" id="f-option4" name="selector" />
-                        <label for="f-option4">I’ve read and accept the </label>
-                        <a href="#">terms & conditions*</a>
-                      </div>
-                      
-                     
-                    </div>
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <h2>Select Default Address</h2>
-                        <div class="address-list">
-                            {% for address in address_item %}
-                                <div class="address-box">
-                                    <input type="radio" name="default_address" value="{{ address.id }}" id="address_{{ address.id }}" >
-                                    <div class="address-details">
-                                        <p><strong>Name:</strong> {{ address.first_name }} {{ address.last_name }}</p>
-                                        <p><strong>Address:</strong> {{ address.address }}</p>
-                                        <p><strong>City:</strong> {{ address.city }}</p>
-                                        <p><strong>State:</strong> {{ address.state }}</p>
-                                        <p><strong>Country:</strong> {{ address.country }}</p>
-                                  
-                                    </div>
-                                </div>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="border p-4 rounded">
+                            <h3>Your Order</h3>
+                            <ul class="list-unstyled">
+                                <li class="mb-3">
+                                    <strong>Product</strong>
+                                    <span class="float-right">Total</span>
+                                    <span class="float-right">Total</span>
+                                </li>
+                            {% for item in cart_items %}
+                                <li class="mb-3">
+                                    {{ item.product.product_name}} x {{item.quantity}}
+                                    <span class="float-right">${{ item.product.product_price }}</span>
+                                </li>
                             {% endfor %}
-                        </div>
-                            <button class="btn_3" type="submit" id="submit-button" >Proceed to Paypal</button>
 
-                        <div class="col-md-6">
-                            <h2>Add New Address</h2>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">Add Address</button>
+                                <li class="mb-3">
+                                    <strong>Total</strong> {% if coupon_usage%}
+                                    <span class="float-right">${{total}}</span>
+                                     {% else %}
+                                    <span class="float-right">${{ total}}</span> 
+                                    {% endif %}
+                                </li>
+                            </ul>
                         </div>
-                      </div>
-                  </div>
-                  </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="border p-4 rounded mb-4">
+                            <h3>Select Address</h3>
+                            <div class="address-list" id="default_address">
+                                {% for address in address_item %}
+                                <div class="custom-control custom-radio mb-3">
+                                    <input type="radio" class="custom-control-input" name="default_address" value="{{ address.id }}" id="address_{{ address.id }}">
+                                    <label class="custom-control-label" for="address_{{ address.id }}">
+                                        {{address.first_name}}, {{address.last_name}}, {{address.address}}, {{address.country}}, {{address.state}}, {{address.pincode}}, {{address.phone}}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="border p-4 rounded mb-4">
+                            <h3>Payment Method</h3>
+                            <div class="custom-control custom-radio mb-3">
+                                <input type="radio" class="custom-control-input" id="f-option5" name="payment-method" value="cod">
+                                <label class="custom-control-label" for="f-option5">Cash On Delivery</label>
+                            </div>
+                            <div class="custom-control custom-radio mb-3">
+                                <input type="radio" class="custom-control-input" id="f-option6" name="payment-method" value="paypal">
+                                <label class="custom-control-label" for="f-option6">Razor Pay</label>
+                            </div>
+                            <div class="custom-control custom-radio mb-3">
+                                <input type="radio" class="custom-control-input" id="f-option7" name="payment-method" value="wallet">
+                                <label class="custom-control-label" for="f-option7">Wallet</label>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-block mb-4" type="submit" id="proceedPayment">Proceed to Order</button>
+
+                        <div class="border p-4 rounded">
+                            <h3>Add New Address</h3>
+                            <button type="button" class="btn btn-outline-secondary btn-block" data-bs-toggle="modal" data-bs-target="#addAddressModal">Add Address</button>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
+            </form>
+        </div>
+    </section>
 
-            {% for it in coupon %}
-            
-            <div class="coupon">
-              <div class="container">
-                <h3> {{it.coupon_name}} </h3>
-              </div>
-              <div class="container" style="background-color:white">
-                <h2><b> {{it.discount}}%  OFF YOUR PURCHASE </b></h2>
-                <p>Purchase Minumum Price: <span class="promo"> ${{it.min_price}} </span></p>
-              </div>
-              <div class="container">
-                <p>Use Promo Code: <span class="promo" id="coupon-code" onclick="copyCouponCode()">{{it.coupon_code}}</span></p>
-              
-                <p class="start">Start: {{it.start_date}} </p>
-                <p class="expire">Expires: {{it.end_date}} </p>
-              </div>
-            </div>
-            {% endfor %}
-          </form>
-  </section>
 </main>
 
 
 
 
 <!-- Modal -->
- <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold;">New Address</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="{% url 'add_address_check' %}" method="POST" class="justify-content-between">
-          {% csrf_token %}
-          <div class="row mb-1">
-            <div class="col-lg-6">
-              <div class="checkout__input">
-                <p>First Name<span>*</span></p>
-                <input type="text" name="firstname" class="form-control">
-              </div>
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title " id="exampleModalLabel" style="font-weight: bold;">New Address</h5>
+                <button type="button " class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="col-lg-6">
-              <div class="checkout__input">
-                <p>Last Name<span>*</span></p>
-                <input type="text" name="lastname" class="form-control">
-              </div>
+            <div class="modal-body">
+                <form action="{% url 'add_address_check' %}" method="POST" class="justify-content-between">
+                    {% csrf_token %}
+                    <div class="row mb-1">
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <p>First Name<span>*</span></p>
+                                <input type="text" name="firstname" class="form-control ">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 ">
+                            <div class="checkout__input">
+                                <p>Last Name<span>*</span></p>
+                                <input type="text" name="lastname" class="form-control ">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkout__input mb-1">
+                        <p>Country<span>*</span></p>
+                        <input type="text" name="country" class="form-control ">
+                    </div>
+                    <div class="checkout__input mb-1">
+                        <p>Address<span>*</span></p>
+                        <input type="text" class="checkout__input__add form-control" name="address">
+                    </div>
+                    <div class="checkout__input mb-1">
+                        <p>Town/City<span>*</span></p>
+                        <input type="text" name="city" class="form-control">
+                    </div>
+                    <div class="checkout__input mb-1">
+                        <p>State<span>*</span></p>
+                        <input type="text" name="state" class="form-control">
+                    </div>
+                    <div class="checkout__input mb-1">
+                        <p>Postcode / ZIP<span>*</span></p>
+                        <input type="text" name="pincode" class="form-control">
+                    </div>
+                    <div class="row mb-1">
+                        <div class="col-lg-6">
+                            <div class="checkout__input">
+                                <p>Phone<span>*</span></p>
+                                <input type="text" name="phone" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 ">
+                            <div class="checkout__input">
+                                <p>Email<span>*</span></p>
+                                <input type="text" name="email" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="checkout__input mb-1">
+                        <p>Order notes<span>*</span></p>
+                        <input type="text" placeholder="Notes about your order, e.g. special notes for delivery. " name="order_note" class="form-control">
+                    </div>
             </div>
-          </div>
-          <div class="checkout__input mb-1">
-            <p>Country<span>*</span></p>
-            <input type="text" name="country" class="form-control">
-          </div>
-          <div class="checkout__input mb-1">
-            <p>Address<span>*</span></p>
-            <input type="text" class="checkout__input__add form-control" name="address">
-          </div>
-          <div class="checkout__input mb-1">
-            <p>Town/City<span>*</span></p>
-            <input type="text" name="city" class="form-control">
-          </div>
-          <div class="checkout__input mb-1">
-            <p>State<span>*</span></p>
-            <input type="text" name="state" class="form-control">
-          </div>
-          <div class="checkout__input mb-1">
-            <p>Postcode / ZIP<span>*</span></p>
-            <input type="text" name="pincode" class="form-control">
-          </div>
-          <div class="row mb-1">
-            <div class="col-lg-6">
-              <div class="checkout__input">
-                <p>Phone<span>*</span></p>
-                <input type="text" name="phone" class="form-control">
-              </div>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="submit" class="btn btn-danger">Create New Address</button>
             </div>
-            <div class="col-lg-6">
-              <div class="checkout__input">
-                <p>Email<span>*</span></p>
-                <input type="text" name="email" class="form-control">
-              </div>
-            </div>
-          </div>
-          <div class="checkout__input mb-1">
-            <p>Order notes<span>*</span></p>
-            <input type="text" placeholder="Notes about your order, e.g. special notes for delivery." name="order_note" class="form-control">
-          </div>
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button type="submit" class="btn btn-danger">Create New Address</button>
-      </div>
-     
+
+        </div>
     </div>
-  </div>
-</div> 
+</div>
 
 
 {% for message in messages %}
-<div class="alert alert-success">
+<div class="alert alert-success ">
     {{ message }}
 </div>
 {% endfor %}
@@ -342,90 +165,55 @@ div.message.error {
 
 
 
-    <script>
-      $(document).ready(function () {
-        $("#yourButtonID").click(function () {
-            $("#productDetailsModal").modal("show");
+<script>
+    $(document).ready(function() {
+        $("#yourButtonID ").click(function() {
+            $("#productDetailsModal ").modal("show ");
         });
     });
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
- 
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js "></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js "></script>
 
 
-    <script>
 
-      $(function() {
-        $('#apply-coupon-button').click(function(e) {
-            e.preventDefault();
-    
-            var couponCode = $('#coupon-code').val();
-            var grandTotal = $('#grand-total').val(); 
-    
-            $.ajax({
-                method: "POST",
-                url: "{% url 'apply_coupon' %}",
-                data: {
-                    'coupon_code': couponCode,
-                    'grand_total': grandTotal,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                },
-                success: function(response) {
-                    console.log(response);
-    
-                    if (response.message  === 'Field is blank' || response.message === 'Coupon does not exist' || response.message === 'Coupon already used!' || response.message === 'You are not eligible for this coupon') {
-                        swal("Error!", response.message, "error");
-                        $('.cartdata').load(location.href + " .cartdata");
-                    } else if (response.message === 'Coupon added successfully') {
-                        swal("Congratulations!", response.message, "success");
-                        $('.cartdata').load(location.href + " .cartdata");
-                    } else {
-                        swal("Error!", response.message, "error");
-                        $('.cartdata').load(location.href + " .cartdata");
-                    }
-    
-                    // Update the discounted price and discount amount
-                    $('#discounted-price').text(response.grand_total);
-                    $('#discount').text(response.discount.toFixed(2));
+
+
+
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded ", function() {
+        var submitButton = document.getElementById("submit-button ");
+
+        submitButton.addEventListener("click ", function() {
+            var selectedAddress = getSelectedAddress();
+            if (selectedAddress) {
+                alert("Selected Address: " + selectedAddress);
+                // You can use the selectedAddress in your JavaScript logic here
+            } else {
+                alert("No address selected ");
+            }
+        });
+
+        function getSelectedAddress() {
+            var radioButtons = document.querySelectorAll('input[name="default_address "]');
+            for (var i = 0; i < radioButtons.length; i++) {
+                if (radioButtons[i].checked) {
+                    return radioButtons[i].value;
                 }
-            });
-        });
+            }
+            return null; // No address selected
+        }
     });
-    
-    </script>
+</script>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js "></script>
+
+<script src="path_to_sweetalert_library.js "></script>
 
 
 
-
-  
-  
-  <script>
-      document.addEventListener("DOMContentLoaded", function () {
-          var submitButton = document.getElementById("submit-button");
-  
-          submitButton.addEventListener("click", function () {
-              var selectedAddress = getSelectedAddress();
-              if (selectedAddress) {
-                  alert("Selected Address: " + selectedAddress);
-                  // You can use the selectedAddress in your JavaScript logic here
-              } else {
-                  alert("No address selected");
-              }
-          });
-  
-          function getSelectedAddress() {
-              var radioButtons = document.querySelectorAll('input[name="default_address"]');
-              for (var i = 0; i < radioButtons.length; i++) {
-                  if (radioButtons[i].checked) {
-                      return radioButtons[i].value;
-                  }
-              }
-              return null; // No address selected
-          }
-      });
-  </script>
-  
-
-   
 {% endblock content %}

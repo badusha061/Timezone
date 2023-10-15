@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 'discount_amount','start_date','end_date'
 # Create your models here.
 
@@ -14,3 +15,4 @@ class Offer(models.Model):
     
     def is_offer_expired(self):
         return timezone.now().date() >= self.end_date
+

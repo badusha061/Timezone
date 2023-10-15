@@ -119,3 +119,5 @@ def user_block_status(request):
 
 def adminpage(request):
     return redirect('adminside:dashboard')
+
+

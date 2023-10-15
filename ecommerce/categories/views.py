@@ -20,12 +20,12 @@ def categories(request):
 def add_categories(request):
     if  request.user.is_superuser:
         if request.method == 'POST':
-            name_categories = request.POST.get('name', 'None')           
+            name_categories = request.POST.get('name', None)           
             image_categories = request.FILES.get('image', None) 
 
             #validatings the fields is empty     
             if name_categories.strip() == '':
-                messages.error(request, 'field is empty!')
+                messages.error(request, ' name category field is empty!')
                 return redirect('add_categories')
             if Category.objects.filter(name=name_categories).exists():
                 messages.error(request,'the categories already taken!')
@@ -40,7 +40,6 @@ def add_categories(request):
                 
                 new_category.save()
                 messages.success(request, 'Category added succesfully')
-                
         categories = Category.objects.all()
         context = {
             'categories':categories
@@ -74,7 +73,6 @@ def edit_categories(request,editcategory_id):
         category = Category.objects.get(id=editcategory_id)
         category.categories =name_categories
         category.name = name_categories
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         img_category.save()
         messages.success(request, 'succesfully edited')
 

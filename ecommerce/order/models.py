@@ -10,14 +10,14 @@ class OrderReturn(models.Model):
     reason = models.TextField()
 
     def __str__(self) -> str:
-        return self.user
+        return self.user.username
     
 
 class OrderCancel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    option = models.CharField( max_length=50)
-    reason = models.TextField()
+    option = models.CharField( max_length=50,null=True)
+    reason = models.TextField(null=True)
 
     def __str__(self) -> str:
-        return self.user
+        return self.user.username

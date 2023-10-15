@@ -25,34 +25,34 @@ def add_coupon(request):
         start_date_s = request.POST['valid_from']
         end_date_s = request.POST['valid_to']
         
-        # if coupon_name.strip() == '':
-        #     messages.error(request, 'Name fields is empty')
-        #     return redirect('coupon')
-        # if not re.search(r'\b[A-Z0-9a-z]{2,}\b', coupon_code):
-        #     messages.error(request,'Coupon code must be letter and numbers')
-        #     return redirect('coupon')
-        # if coupon_discount.strip() == '':
-        #     messages.error(request, 'Dicount fields is empty')
-        #     return redirect('coupon')
-        # m = int(minimum_price)
-        # if m > 0:
-        #     messages.error(request, 'the price should be greater than zero')
-        #     return redirect('coupon')
-        # if minimum_price.strip() == '':
-        #     messages.error(request, 'price feilds is empty')
-        #     return redirect('coupon')
-        # try:
-        #     start_date = datetime.strptime(start_date_s, '%Y-%m-%d').date()
-        #     end_date = datetime.strptime(end_date_s,'%Y-%m-%d').date()
-        # except ValueError:
-        #     messages.error(request,'invalid date format . Use YYYY-MM-DD.')
-        #     return redirect('coupon')
-        # if start_date >= end_date:
-        #     messages.error(request, 'Start date must be before the end date')
-        #     return redirect('coupon')
-        # if start_date < timezone.now().date():
-        #     messages.error(request, "Start date cannot be in the past.")
-        #     return redirect('coupon')
+        if coupon_name.strip() == '':
+            messages.error(request, 'Name fields is empty')
+            return redirect('coupon')
+        if not re.search(r'\b[A-Z0-9a-z]{2,}\b', coupon_code):
+            messages.error(request,'Coupon code must be letter and numbers')
+            return redirect('coupon')
+        if coupon_discount.strip() == '':
+            messages.error(request, 'Dicount fields is empty')
+            return redirect('coupon')
+        m = int(minimum_price)
+        if m > 0:
+            messages.error(request, 'the price should be greater than zero')
+            return redirect('coupon')
+        if minimum_price.strip() == '':
+            messages.error(request, 'price feilds is empty')
+            return redirect('coupon')
+        try:
+            start_date = datetime.strptime(start_date_s, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_s,'%Y-%m-%d').date()
+        except ValueError:
+            messages.error(request,'invalid date format . Use YYYY-MM-DD.')
+            return redirect('coupon')
+        if start_date >= end_date:
+            messages.error(request, 'Start date must be before the end date')
+            return redirect('coupon')
+        if start_date < timezone.now().date():
+            messages.error(request, "Start date cannot be in the past.")
+            return redirect('coupon')
         
         coupon_item = Coupon.objects.create(
             coupon_name = coupon_name,
@@ -79,34 +79,34 @@ def edit_coupon(request,editcoupon_id):
         end_date_s = request.POST['valid_to']
         
 
-        # if coupon_name.strip() == '':
-        #     messages.error(request, 'Name fields is empty')
-        #     return redirect('coupon')
-        # if not re.search(r'\b[A-Z0-9a-z]{2,}\b', coupon_code):
-        #     messages.error(request,'Coupon code must be letter and numbers')
-        #     return redirect('coupon')
-        # if coupon_discount.strip() == '':
-        #     messages.error(request, 'Dicount fields is empty')
-        #     return redirect('coupon')
-        # m = int(minimum_price)
-        # if m>0:
-        #     messages.error(request, 'the price should be greater than zero')
-        #     return redirect('coupon')
-        # if minimum_price.strip() == '':
-        #     messages.error(request, 'price feilds is empty')
-        #     return redirect('coupon')
-        # try:
-        #     start_date = datetime.strptime(start_date_s, '%Y-%m-%d').date()
-        #     end_date = datetime.strptime(end_date_s,'%Y-%m-%d').date()
-        # except ValueError:
-        #     messages.error(request,'invalid date format . Use YYYY-MM-DD.')
-        #     return redirect('coupon')
-        # if start_date >= end_date:
-        #     messages.error(request, 'Start date must be before the end date')
-        #     return redirect('coupon')
-        # if start_date < timezone.now().date():
-        #     messages.error(request, "Start date cannot be in the past.")
-        #     return redirect('coupon')
+        if coupon_name.strip() == '':
+            messages.error(request, 'Name fields is empty')
+            return redirect('coupon')
+        if not re.search(r'\b[A-Z0-9a-z]{2,}\b', coupon_code):
+            messages.error(request,'Coupon code must be letter and numbers')
+            return redirect('coupon')
+        if coupon_discount.strip() == '':
+            messages.error(request, 'Dicount fields is empty')
+            return redirect('coupon')
+        m = int(minimum_price)
+        if m>0:
+            messages.error(request, 'the price should be greater than zero')
+            return redirect('coupon')
+        if minimum_price.strip() == '':
+            messages.error(request, 'price feilds is empty')
+            return redirect('coupon')
+        try:
+            start_date = datetime.strptime(start_date_s, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date_s,'%Y-%m-%d').date()
+        except ValueError:
+            messages.error(request,'invalid date format . Use YYYY-MM-DD.')
+            return redirect('coupon')
+        if start_date >= end_date:
+            messages.error(request, 'Start date must be before the end date')
+            return redirect('coupon')
+        if start_date < timezone.now().date():
+            messages.error(request, "Start date cannot be in the past.")
+            return redirect('coupon')
 
 
 

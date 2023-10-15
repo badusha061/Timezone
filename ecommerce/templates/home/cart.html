@@ -1,203 +1,204 @@
-{% extends "base.html" %}
-{% load static %}
-{% block content %}
+{% extends "base.html" %} {% load static %} {% block content %}
+
+
+<style>
+    label {
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+</style>
 
 
 
-  <main>
-      <!-- Hero Area Start-->
-      <div class="slider-area ">
-          <div class="single-slider slider-height2 d-flex align-items-center">
-              <div class="container">
-                  <div class="row">
-                      <div class="col-xl-12">
-                          <div class="hero-cap text-center">
-                              <h2>Cart List</h2>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-      <!--================Cart Area =================-->
-      <section class="cart_area section_padding">
+<main>
+
+    <section class="cart_area section_padding">
         <div class="container">
-          <div class="cart_inner">
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Product</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Delete</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  
-                  <tr>
-                    <td>
-                      {% for i in cart %}
-                      <div class="media">
-                        <div class="d-flex">
-                    
-                          <img src= "{{i.product.product_image.url}}" alt="image" />
-                                                
-                        </div>
-                        <div class="media-body">
-                          <p> {{i.product.product_name}} </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <h5>$ {{i.product.product_price}} </h5>
-                    </td>
-                    
-                    <td>
-                      <div class="product_count">
-                        <div>
-                        <span class="changeQuantity" onclick="sub(this)"> <i class="ti-minus"></i></span>
-                        <input class="" id="productcount"  type="text" value = "{{i.quantity}}">
-                        <input type="hidden" id="productprice" value="{{i.product.product_price}}">
-                        <input type="hidden" id="productid" value="{{i.product.id}}">
-                        <span class="changeQuantity" onclick="add(this)"> <i class="ti-plus"></i></span>
-                        <span id="totalprice" style="padding-left: 50px;">{{i.total_price}}</h5>
-                        </div>
-                      </div>
-                      </td>
-                      
-                        
-                        
+            <div class="cart_inner">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total Price </th>
+                                <th scope="col">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Cart Item Loop -->
+                            {% for i in cart %}
+                            <tr>
+                                <td>
+                                    <div class="media">
+                                        <div class="d-flex">
+                                            <img src="{{i.product.product_image.url}}" alt="image" />
+                                        </div>
+                                        <div class="media-body">
+                                            <p>{{i.product.product_name}}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if i.product.offer or i.product.product_brand.offer %}
+                                    <h5 id="product_price">$ {{i.product.get_offer}}</h5>
+                                    {% else %}
+                                    <h5 id="product_price">$ {{i.product.product_price}}</h5>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="product_count">
+                                        <button class="btn btn-primary btn-sm changeQuantity" data-action="decrement" data-product-id="{{i.product.id}}">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input class="input-number"  type="number" value="{{i.quantity}}"  readonly  id="product_qty{{i.product.id}}">
+                                        <button class="btn btn-primary btn-sm changeQuantity" data-action="increment" data-product-id="{{i.product.id}}">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
 
-                   <td>
-                      <form method="POST" action="{% url 'delete_cart' i.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">
-                          Delete
-                        </button>
-                      </form>
-                    </td>
+                                </td>
+                              
+                                <td>
+                                    <div id="singlePriceDisplay{{i.product.id}}">
+                                            {{single_price}}
+                                    </div>
+                                </td>                        
+                                <td>
+                                    <form method="POST" action="{% url 'delete_cart' i.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
 
-                  </tr>
-                  <tr>
-                    <td>
-                      {% endfor %}
-                  </tr>
-                  <tr class="bottom_button" method='POST'>
-                    <td>
-                      <a class="btn_1" href="#">Update Cart</a>
-                    </td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      <div class="cupon_text float-right">
-                        <a class="btn_1" href="#">Close Coupon</a>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      <h5>Subtotal</h5>
-                    </td>
-                    <td>
-                      <h5>$ {{total_price}} </h5>
-                    </td>
-                  </tr>
-                  <tr class="shipping_area">
-                    <td></td>
-                    <td></td>
-                    <td>
-                      <h5>Shipping</h5>
-                    </td>
-                    <td>
-                      <div class="shipping_box">
-                        <ul class="list">
-                          <li>
-                            Flat Rate: $5.00
-                            <input type="radio" aria-label="Radio button for following text input">
-                          </li>
-                          <li>
-                            Free Shipping
-                            <input type="radio" aria-label="Radio button for following text input">
-                          </li>
-                          <li>
-                            Flat Rate: $10.00
-                            <input type="radio" aria-label="Radio button for following text input">
-                          </li>
-                          <li class="active">
-                            Local Delivery: $2.00
-                            <input type="radio" aria-label="Radio button for following text input">
-                          </li>
-                        </ul>
-                        <h6>
-                          Calculate Shipping
-                          <i class="fa fa-caret-down" aria-hidden="true"></i>
-                        </h6>
-                        <select class="shipping_select">
-                          <option value="1">Bangladesh</option>
-                          <option value="2">India</option>
-                          <option value="4">Pakistan</option>
-                        </select>
-                        <select class="shipping_select section_bg">
-                          <option value="1">Select a State</option>
-                          <option value="2">Select a State</option>
-                          <option value="4">Select a State</option>
-                        </select>
-                        <input class="post_code" type="text" placeholder="Postcode/Zipcode" />
-                        <a class="btn_1" href="#">Update Details</a>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-           
-              <div class="checkout_btn_inner float-right">
-                <a class="btn_1" href="#">Continue Shopping</a>
-                <a class="btn_1 checkout_btn_1" href="{% url 'checkout' %}">Proceed to checkout</a>
+
+
+                <!-- Trigger button for the modal -->
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#couponModal">Select Coupon</button>
               </div>
+
+              <div>
+                <li>
+
+                  <a href="#">Coupon
+                     <span></span>
+                                                <form id="apply-coupon-form">
+                                                    <input type="text" id="coupon-code" name="coupon-code" placeholder="Enter coupon code">
+                                                    <button type="submit" id="apply-coupon-button" class="btn btn-primary">Apply Coupon</button>
+                                                    <div id="coupon-message"></div>
+                                                    </a>
+                                                    </li>
+                                            </div>
+
+                                            <div class="col-lg-6 d-flex align-items-center">
+                                                <div class="column">
+                                                    <hr class="divider">
+                                                    <h3 class="product-price"> Total Price: <span id="dispricecounted"> {{total_price}} </span> </h3>
+                                                    
+                                                    <hr class="divider">
+                                                    <h3 class="product-brand"> Product Discount: 
+                                                        <span id="discount">{% if discount %}{{discount}}{% else %}No Discount{% endif %}</span>
+                                                    </h3>
+                                                
+                                                    <hr class="divider">
+                                                    <h3 class="product-category"> After Discount : <span id="grand_total">{% if after_discount != None %}{{after_discount}}{% else %}{{total_price}}{% endif %}</span></h3>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="checkout_btn_inner float-right">
+                                                <a class="btn_1" href="{% url 'home:shop' %}">Continue Shopping</a>
+                                                <a class="btn_1 checkout_btn_1" href="{% url 'checkout' %}">Proceed to checkout</a>
+                                            </div>
+                                        </div>
+                    </div>
+        </section>
+        <!--================End Cart Area =================-->
+</main>
+
+
+<!-- add coupon Modal -->
+
+
+
+<div class="modal fade" id="couponModal" tabindex="-1" role="dialog" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="couponModalLabel">Available Coupons</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                                                </button>
             </div>
-          </div>
-      </section>
-      <!--================End Cart Area =================-->
-  </main>
+            <div class="modal-body">
+                <!-- Loop through available coupons and display them -->
+                {% for it in coupon %}
+                <div class="coupon">
+                    <div class="container">
+                        <h3>{{it.coupon_name}}</h3>
+                    </div>
+                    <div class="container" style="background-color:white">
+                        <h2><b>{{it.discount}}% OFF YOUR PURCHASE</b></h2>
+                        <p>Purchase Minimum Price: <span class="promo">${{it.min_price}}</span></p>
+                    </div>
+                    <div class="container">
+                        <p>Use Promo Code: <span class="promo" data-coupon="{{it.coupon_code}}" >{{it.coupon_code}}</span></p>
+                        <p class="start">Start: {{it.start_date}}</p>
+                        <p class="expire">Expires: {{it.end_date}}</p>
+                    </div>
+                    <button class="btn btn-primary btn-block select-coupon-btn" id='refer' onclick="copyReferralCode('{{it.coupon_code}}')">Select this coupon</button>
+                </div>
+                <hr>
+                <!-- Optional line to separate coupons -->
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 
 <!-- Error Modal -->
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="errorModalLabel">Messages</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <p id="errorMessage"></p>
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
-      </div>
-  </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Messages</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% if messages %}
-  <script>
-      document.addEventListener('DOMContentLoaded', function () {
-          // Check if there are error messages
-          var errorMessages = "{% for message in messages %}{{ message }}{% endfor %}".trim();
-          if (errorMessages !== "") {
-              // Set the error message in the modal
-              document.getElementById('errorMessage').textContent = errorMessages;
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if there are error messages
+        var errorMessages = "{% for message in messages %}{{ message }}{% endfor %}".trim();
+        if (errorMessages !== "") {
+            // Set the error message in the modal
+            document.getElementById('errorMessage').textContent = errorMessages;
 
-              // Show the error modal
-              var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-              errorModal.show();
-          }
-      });
-  </script>
+            // Show the error modal
+            var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        }
+    });
+</script>
 {% endif %}
 
 
@@ -205,59 +206,179 @@
 
 
 <!-- SweetAlert CDN -->
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-      <script src="{% static ' js/main.js' %}"></script>
-      <script>
-        function add(button){
-          var productcount = button.parentElement.querySelector('#productcount');
-          var productid = button.parentElement.querySelector('#productid');
-          var productprice = button.parentElement.querySelector('#productprice');
-          var producttotal = button.parentElement.querySelector('#totalprice');
-          var totalprice = parseInt(producttotal.innerHTML) + parseInt(productprice.value);
-          var qty = parseInt(productcount.value)+1;
-          var id = productid.value;
-          $.ajax({
-            method:"POST",
-            url:"{% url 'update_cart' %}",
-            data: {
-              'product_count': qty,
-              'product_id': id,
-              'product_total':totalprice,
-              csrfmiddlewaretoken: '{{csrf_token}}'
-            },
-            success: function(res){
-              producttotal.innerHTML = `${parseInt(res.total)}`
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="{% static 'user/js/main.js' %}"></script> 
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        $('.changeQuantity').off('click').click(function(e){
+            e.preventDefault();
+            var action = $(this).data('action');
+            var productId = $(this).data('product-id');
+            console.log('product id is the ',productId)
+            var input = $('#product_qty' + productId);
+            var qty = parseInt(input.val(), 10) || 0;
+            if (action === 'increment'){
+                console.log('increamented')
+                qty += 1;
+            
+            } else if (action == 'decrement' && qty > 0){
+                console.log('decreamented')
+                qty -= 1; 
             }
-          })
-          productcount.value = parseInt(productcount.value) + 1; 
-        }
-        function sub(button){
-          var productcount = button.parentElement.querySelector('#productcount');
-          var productid = button.parentElement.querySelector('#productid');
-          var productprice = button.parentElement.querySelector('#productprice');
-          var producttotal = button.parentElement.querySelector('#totalprice');
-          var totalprice = parseInt(producttotal.innerHTML) - parseInt(productprice.value);
-          var qty = parseInt(productcount.value)-1;
-          var id = productid.value;
-          $.ajax({
-            method:"POST",
-            url:"{% url 'update_cart' %}",
-            data: {
-              'product_count': qty,
-              'product_id': id,
-              'product_total':totalprice,
-              csrfmiddlewaretoken: '{{csrf_token}}'
-            },
-            success: function(res){
-              producttotal.innerHTML = `${parseInt(res.total)}`
-            }
-          })
-          productcount.value = parseInt(productcount.value) - 1; 
-        }
-      </script>
+            input.val(qty);
+            $.ajax({
+                method: "POST",
+                url: "{% url 'update_cart' %}",
+                data: {
+                    'product_id': productId,
+                    'quantity': qty,
+                    'action':action,
+                    'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
+                },
+                success: function(response) {
+                    console.log(response.status)
+                    if (response.status == 'Requested quantity exceeds available quantity'){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.status,
+                            footer: '<a href="">Why do I have this issue?</a>'
+                          })
+                    } else if (response.success == 'No matching product found in cart'){
+                        console.log(' the error message is the pass')
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.status,
+                            footer: '<a href="">Why do I have this issue?</a>'
+                          })
+                    } else if (response.status == 'No matching product found in cart'){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.status,
+                            footer: '<a href="">Why do I have this issue?</a>'
+                          })
+                    } else if  (response.status == 'Cart Updated Successfully'){
+                        console.log('the product price is the',response.total)
+                        document.getElementById('dispricecounted').textContent = response.total;
+                        document.getElementById('singlePriceDisplay'+productId).textContent = response.single_price;
+                        $('#singlePriceDisplay').text(single_price).toFixed(2);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.status,
+                            footer: '<a href="">Why do I have this issue?</a>'
+                          })
+                    } else if (response.status == 'zero qty not allowed'){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.status,
+                            footer: '<a href="">Why do I have this issue?</a>'
+                          })   
+                    }
+
+                    
+                  
+                },
+                error: function(error) {
+                    alert("Error updating cart.");
+                }
+            })
+    
+            
+
+        });
+    });
+    
+  
+ 
+        
+    
+    
+
+</script>
+
+
+
+<script>
+    $(function() {
+        $('#apply-coupon-button').click(function(e) {
+            e.preventDefault();
+            var grandTotal = $('#dispricecounted').text();
+            console.log('the coupon price is the',grandTotal)
+            var couponCode = $('#coupon-code').val();
+            $.ajax({
+                method: "POST",
+                url: "{% url 'apply_coupon' %}",
+                data: {
+                    'coupon_code': couponCode,
+                    'grand_total': grandTotal,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                success: function(response) {
+                    console.log("getting the console");
+
+                    if (response.message === 'Field is blank' || response.message === 'Coupon does not exist' || response.message === 'Coupon already used!' || response.message === 'You are not eligible for this coupon') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',   
+                            text: response.message,
+                            footer: '<a href="">Why do I have this issue?</a>'
+                          })
+                        $('.cartdata').load(location.href + " .cartdata ");
+                    } else if (response.message === 'Coupon added successfully') {
+                        console.log('used successfully')
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Coupon added successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                          })
+                        $('.cartdata').load(location.href + " .cartdata ");
+                    } else {
+                        swal("Error! ", response.message, "error ");
+                        $('.cartdata').load(location.href + " .cartdata ");
+                    }
+
+                    // Update the discounted price and discount amount
+                    $('#discount').text(response.discount.toFixed(2));
+                    $("#grand_total").text(response.grand_total);
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    function copyReferralCode() {
+        console.log('calling function')
+      var range = document.createRange();
+      range.selectNode(document.getElementById('refer'));
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand("copy");
+      Swal.fire({
+        icon: 'success',
+        title: '',   
+        text: 'Successfully Copy',
+        footer: '<a href="">Why do I have this issue?</a>'
+      })
+  }
+  
+  </script>
+
+
 
 
 {% endblock content %}

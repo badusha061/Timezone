@@ -68,61 +68,71 @@
     }
 </style>
 
+<style>
+    .canceled-message {
+        background-color: #f44336; /* Red background color */
+        color: white; /* White text color */
+        padding: 10px; /* Add padding for better visibility */
+        border-radius: 5px; /* Add rounded corners */
+        font-weight: bold; /* Make the text bold */
+        text-align: center; /* Center-align the text */
+    }
+</style>
+
 
 
 
 <div class="card">
     <div class="card-body">
         <div class="row">
-            {% if address %}
+        {% if order %}
+        {% for item in order %}
             <div class="col-md-5">
                 <h5 class="card-title fw-semibold mb-4"> ORDER ADDRESS</h5>
                 <div class="card">
 
                     <div class="card-body">
                         <table class="table" >
-                            {% for item in address %}
                             <tr>
                                 <td><strong>First Name</strong></td>
-                                <td>:{{item.first_name}}</td>
+                                <td>:{{item.address.first_name}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Last Name</strong></td>
-                                <td>:{{item.last_name}}</td>
+                                <td>:{{item.address.last_name}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Phone Number</strong></td>
-                                <td>:{{item.phone}}</td>
+                                <td>:{{item.address.phone}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Email</strong></td>
-                                <td>:{{item.email}}</td>
+                                <td>:{{item.address.email}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Address</strong></td>
-                                <td>:{{item.address}}</td>
+                                <td>:{{item.address.address}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Country</strong></td>
-                                <td>:{{item.country}}</td>
+                                <td>:{{item.address.country}}</td>
                             </tr>
                             <tr>
                                 <td><strong>City</strong></td>
-                                <td>:{{item.city}}</td>
+                                <td>:{{item.address.city}}</td>
                             </tr>
                             <tr>
                                 <td><strong>State</strong></td>
-                                <td>:{{item.state}}</td>
+                                <td>:{{item.address.state}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Pincode</strong></td>
-                                <td>:{{item.pincode}}</td>
+                                <td>:{{item.address.pincode}}</td>
                             </tr>
                             <tr>
                                 <td><strong>Order note</strong></td>
-                                <td>:{{item.order_note}}</td>
+                                <td>:{{item.address.order_note}}</td>
                             </tr>
-                            {% endfor %}
                         </table>
                     </div>
                 </div>
@@ -135,7 +145,6 @@
 
                     <div class="card-body">
                         <table class="table">
-                            {% for item in order %}
                             <tr>
                                 <td><strong>Order id</strong></td>
                                 <td>:{{item.id}}</td>
@@ -155,19 +164,20 @@
                                 <td>:{{item.payment_mode}}</td>
                             </tr>
                           
-                            <tr>
-                                <td><strong>Payment id</strong></td>
-                                <td>:None</td>
-                            </tr>
+                         
                 
                             <tr>
                                 <td><strong>Payment id</strong></td>
-                                <td>: None </td>
+                                <td>: {{item.payment_id}} </td>
                             </tr>
                       
                             <tr>
                                 <td><strong>Tracking no</strong></td>
-                                <td>: None </td>
+                                {% if item.tracking_no %}
+                                <td>: {{item.tracking_no}} </td>
+                                {% else %}
+                                <td>:None </td>
+                                {% endif %}
                             </tr>
                             <tr>
                                 <td><strong>Ordered date</strong></td>
@@ -179,7 +189,6 @@
                                 <td>:{{item.od_status}}</td>
                             </tr>
                             <br>
-                            {% endfor %}
                             
                         </table>
                         <br>
@@ -200,33 +209,158 @@
                                 <th scope="col">price</th>
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Status</th>
+                                <th scope="col">Order Tracking</th>
+                                <th scope="col">Cancel</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for item in order_views %}
                             <tr class="text-uppercase">
-                              
+                            {% for it in order_views %}
                                 <td>
                                     <div style="width: 30px;" class="overflow-hidden">
-                                        <img class="w-100" src="{{item.product.product_image.url}} "   alt="product image">
+                                        <img class="w-100" src="{{it.product.product_image.url}} "   alt="product image">
                                     </div>
                                 </td>
                               
-                                 <td><b>{{item.product.product_name}}</td>
-                                <td><b> {{item.product.product_brand}} </td>
-                                <td><b> {{item.product.product_price}} </td>
-                                <td><b> {{item.quantity}} </td>
-                                <td><b> {{item.status}} </td>
+                                 <td><b>{{it.product.product_name}}</td>
+                                <td><b> {{it.product.product_brand}} </td>
+                                <td><b> {{it.price}} </td>
+                                <td><b> {{it.quantity}} </td>
+                                <td><b> {{it.order.od_status}} </td>
+
+                                    <td>
+                                        <a href="{% url 'order_tracker' item.id  %}" class="btn btn-outline-dark">Order Tracking    </a>
+                                      </td>
+
+                                    <td>
+                                                          
+                                        {% if it.order.od_status == 'Cancelled' %}
+
+                                        <p class="canceled-message">Order Canceled</p>
+
+                                        {% elif it.order.od_status == 'Delivered' %}
+                                        <form method="post" action="">
+                                            {% csrf_token %}
+                                            <button type="button" style="background-color: lightblue; color: white;" data-toggle="modal" data-target="#returnOrderModal">Return Order</button>
+                                        </form>
+
+                                        {% elif it.order.od_status == 'Return' %}
+                                        <p class="canceled-message">Order Returned</p>
+                                        {% else %}
+                                        <form method="post" action="">
+                                            {% csrf_token %}
+                                            <button type="button" style="background-color: lightblue; color: white;" data-toggle="modal" data-target="#cancelOrderModal">Cancel Order</button>
+                                        </form>
+                                    </td>
+                                    {% endif %}
+
+
+
                                     </tr>
-                
+
+
+
+                                                                        <!-- The Modal for Cancel -->
+                            <div class="modal" id="cancelOrderModal" tabindex="-1" role="dialog" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Enter the reason for cancellation:</p>
+                                            <form method="post" action="{% url 'cancel_order' item.id %}">
+                                                {% csrf_token %}
+                                                <label for="options">Select a Return Reason:</label>
+                                                <select id="options" name="options" class="custom-select custom-select-lg mb-3"  >
+                                                    <option value="Product Damage">Product Damage</option>
+                                                    <option value="Size Change">Brand Change</option>
+                                                    <option value="Color Change">Category Change</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+
+                                                <label for="options">write your Cancel Reason:</label>
+                                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="reason"></textarea>
+                                            
+                                                <input type="hidden" class="order_id" value="{{ item.order.id }}">
+                                                <input type="hidden" class="orderitem_id" value="{{ item.id }}">
+                                                <button type="submit" class="btn btn-danger order_cancel">Confirm</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <!-- The Modal for return -->
+                             <div class="modal" id="returnOrderModal" tabindex="-1" role="dialog" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="cancelOrderModalLabel">Return Order</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Enter the reason for Return:</p>
+                                            <form method="post" action="{% url 'return_order' item.id %}">
+                                                {% csrf_token %}
+                                                <label for="options">Select a Return Reason:</label>
+                                                <select id="options" name="options" class="custom-select custom-select-lg mb-3"  >
+                                                    <option value="Product Damage">Product Damage</option>
+                                                    <option value="Size Change">Brand Change</option>
+                                                    <option value="Color Change">Category Change</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+
+                                                <label for="options">write your Return Reason:</label>
+                                                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="reason"></textarea>
+                                            
+                                                <input type="hidden" class="order_id" value="{{ item.order.id }}">
+                                                <input type="hidden" class="orderitem_id" value="{{ item.id }}">
+                                                <button type="submit" class="btn btn-danger order_cancel">Confirm</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            {% endfor %}
+
+
                             {% endfor %}
                         <!-- Loop through the items -->
 
         {% else %}
         <p class="no-orders-message">No order has been made yet.</p>
         <a href="{% url 'home:shop' %}" class="btn btn-outline-primary-2"><span>GO SHOP</span><i class="icon-long-arrow-right"></i></a>
-  
         {% endif %}
+
+
+
+    </tr>
+
+</tbody>
+</table>
+
+</div>
+</div>
+
+
+</div>
+</div>
+</div>
+
+
+
+
+
 
 
 <script>
@@ -242,17 +376,5 @@
 
 
 
-                            </tr>
-
-                        </tbody>
-                    </table>
-
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-</div>
 
 {% endblock content %}

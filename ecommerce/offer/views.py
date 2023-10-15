@@ -30,6 +30,10 @@ def add_offer(request):
             if Offer.objects.filter(offer_name=offername).exists():
                 messages.error(request, 'Offer Name is already taken')
                 return redirect('offer')
+            elif end_date <= start_date:
+                form.add_error('end_date', 'End date must be after the start date.')
+                messages.error(request,'End date must be after the start date.')
+                return render(request, 'adminside/offer.html',{'form':form})
             else:                   
                 form.save()
                 messages.success(request, 'Successfully Added')

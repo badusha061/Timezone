@@ -2,11 +2,14 @@
 <!doctype html>
 <html class="no-js" lang="zxx">
 <head>
+
+
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Watch shop | eCommers</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="manifest" href="site.webmanifest">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'user/assets/user/img/favicon.ico' %}">
 
@@ -27,13 +30,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  
+
 </head>
 </head>
 
 
-
-
-
+<style>
+    a, a:hover {
+        text-decoration: none;
+    }
+</style>
 <body>
     <!--? Preloader Start -->
     <div id="preloader-active"> 
@@ -63,35 +71,19 @@
                                 <ul id="navigation">  
                                     <li><a href="{% url 'home:home' %}">Home</a></li>
                                     <li><a href="{% url 'home:shop' %}">shop</a></li>
-                                    <li><a href="{% url 'home:about' %}">about</a></li>
-                                    <li class="hot"><a href="#">Latest</a>
-                                        <ul class="submenu">
-                                            <li><a href="{% url 'home:shop' %}"> Product list</a></li>
-                                            <li><a href="{% url 'home:product_details' %}"> Product Details</a></li>
-                                        </ul>
+                                    <li><a href="{% url 'cart' %}">Cart</a></li>
+                                    <li><a href="{% url 'wishlist' %}">Wishlist</a>
                                     </li>
-                                    <li><a href="{% url 'home:blog' %}">Blog</a>
-                                        <ul class="submenu">
-                                            <li><a href="{% url 'home:blog' %}">Blog</a></li>
-                                        </ul>
+                                    <li><a href="{% url 'checkout' %}">Product Checkout</a>
                                     </li>
-                                    <li><a href="#">Pages</a>
-                                        <ul class="submenu">
-                                            {% if user.is_authenticated %}
-                                            <li><a href="{% url 'userauth:user_logout' %}">logout</a></li>
+                                    {% if user.is_authenticated %}
+                                    <li><a href="{% url 'userauth:user_logout' %}">Logout</a>
                                             {% else %}
                                             <li><a href="{% url 'userauth:user_login' %}">Login</a></li>
                                             <li><a href="{% url 'userauth:register' %}">Regisration</a></li>
-                                            {% endif %}
-                                            <li><a href="{% url 'cart' %}">Cart</a></li>
-                                            <li><a href="{% url 'wishlist' %}">
-                                                wish List 
-                                            </a></li>
-                                            
-                                            <li><a href="{% url 'checkout' %}">Product Checkout</a></li>
+                                            {% endif %}                                            
                                         </ul>
                                     </li>
-                                    <li><a href="{% url 'home:contact' %}">Contact</a></li>
                                 </ul>
                             </nav>
                         </div>
@@ -100,10 +92,10 @@
                                                 <div class="header-right">
                                                     <ul>
                                                         <li>
-                                                            <div class="nav-search search-switch">
-                                                                <span class="flaticon-search"></span>
-                                                            </div>
+                                                         
+
                                                         </li>
+                                                        
                                                         {% if user.is_authenticated%}
                                                             <li> <a href="{% url 'userprofile' %}"><span class="flaticon-user"></span></a></li>
                                                         {% else %}
@@ -258,6 +250,13 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 <!-- Jquery Plugins, main Jquery -->	
 <script src="{% static './user/assets/js/plugins.js' %}"></script>
 <script src="{% static './user/assets/js/main.js' %}"></script>
+
+<!-- Jquery Razor pay for checkout  -->
+<script src="{% static './user/assets/js/checkout.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
 
 </body>
 </html>

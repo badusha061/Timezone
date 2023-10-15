@@ -3,6 +3,7 @@ from categories.models import Brand , Category
 from .models import Product  , ProductImage
 from django.contrib import messages 
 from django.db.models import Q
+from offer.models import Offer
 # Create your views here.
 
 
@@ -11,11 +12,13 @@ def product_list(request):
     brand = Brand.objects.filter(is_available = True).order_by('id')
     image = ProductImage.objects.filter(is_available = True).order_by('id')
     category = Category.objects.filter(is_available = True).order_by('id')
+    offer = Offer.objects.filter(is_available = True).order_by('id')
     context = {
         'product':product,
         'brand':brand,  
         'image':image,
-        'category':category
+        'category':category,
+        'offer':offer
     }
 
     return render(request, 'product/product.html',context)
@@ -29,6 +32,7 @@ def add_product(request):
         brand_id = request.POST.get('product_brand')
         catgory_id = request.POST.get('product_category')
         quantity = request.POST.get('product_quantity')
+        offer = request.POST.get('offer')
 
         # validatings the fields is empty
         if name.strip() == '' or price.strip() == '' or quantity.strip() == '':
@@ -51,14 +55,13 @@ def add_product(request):
             product_brand = brand,
             product_quantity = quantity,
             product_category = category,
+            offer_id = offer,
             
         )
         product.save()
-
         for image in images:
             product_image = ProductImage(product=product, image = image)
             product_image.save()
-
 
         messages.success(request, ' successfully added')
  
@@ -99,6 +102,8 @@ def edit_product(request,editproduct_id):
         price = request.POST['product_price']
         brand_id = request.POST.get('product_brand')
         quantity = request.POST.get('product_quantity')
+        offer = request.POST.get('offer')
+        product_categories = request.POST.get('product_category')
 
         #validatings the fields is empty
         if name.strip() == '':
@@ -106,9 +111,6 @@ def edit_product(request,editproduct_id):
             return redirect('product_list')
         if price.strip() == '':
             messages.error(request, 'Product price is empty')
-            return redirect('product_list')
-        if brand_id.strip() == '':
-            messages.error(request, 'shold take one brand')
             return redirect('product_list')
         if quantity.strip() == '':
             messages.error(request, 'Product quantity feilds is empty')
@@ -129,10 +131,21 @@ def edit_product(request,editproduct_id):
         #editings the product 
         product = Product.objects.get(id = editproduct_id)
         brand = Brand.objects.filter(brand_name = brand_id)
+        if offer:
+            offer_obj = Offer.objects.get(id = offer)
+        else:
+            offer_obj = None
+
+        if product_categories:
+            category_ob = Category.objects.get(id = product_categories)
+        else:
+            category_ob = None
         product.product_name = name
         product.product_price = price
         product.product_brand.brand_name = brand
         product.product_quantity = quantity
+        product.offer = offer_obj
+        product.product_category = category_ob
         product.save()
         messages.success(request, 'successfully edited')
 
@@ -146,10 +159,7 @@ def product_view(request, viewproduct_id):
     brand = Brand.objects.filter(is_available = True).order_by('id')
     category = Category.objects.filter(is_available = True).order_by('id')
     image_prodcut = ProductImage.objects.filter(product=product.id)
-    print('images is the :',image_prodcut)
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!11')
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!11')
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!11')
+
     
     context = {
         'product':product,
@@ -165,11 +175,7 @@ def adminpage(request):
 
 def product_details(request,product_id):
     product = Product.objects.get(id = product_id)
-    product_image = ProductImage.objects.filter(product = product_id)
-    print('images is the :',product_image)
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!11')
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!11')
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!11')
+    product_image = ProductImage.objects.filter(product = product_id) 
     if product:        
         context = {
             'product':product,

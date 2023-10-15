@@ -113,11 +113,16 @@
                            
                             <td> {{forloop.counter}} </td>
                             <td> {{item.offer_name}} </td>
-                            <td> {{item.discount_amount}} </td>
+                            <td> {{item.discount_amount}}% </td>
                             <td> {{item.start_date}}  </td>
                             <td> {{item.end_date}} </td>
-                            <td> {% if offer.is_offer_expired  %} <span class="badge rounded-pill alert-warning">Expired</span><span class="badge rounded-pill alert-success"> {% else %} Active</span></td>
-                            {% endif  %}
+                            <td> 
+                                {% if item.is_offer_expired %}
+                                    <span class="badge rounded-pill alert-warning">Expired</span>
+                                {% else %}
+                                    <span class="badge rounded-pill alert-success">Active</span>
+                                {% endif %}
+                            </td>
                             <td>
                                 <!-- Button trigger modal -->
                                 <button type="button" class="btn btn spacer c"

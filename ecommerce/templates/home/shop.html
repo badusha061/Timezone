@@ -1,206 +1,265 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 {% load static %}
 {% block content %}
 
+<style>
+    .search-box {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 25px;
+        overflow: hidden;
+        max-width: 300px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
+    .search-box input[type="text"] {
+        border: none;
+        padding: 10px 15px;
+        width: 100%;
+        border-radius: 25px 0 0 25px;
+        outline: none;
+        font-size: 16px;
+    }
 
-    <main>
-        
-        <!-- Hero Area Start-->
-        <div class="slider-area ">
-            <div class="single-slider slider-height2 d-flex align-items-center">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <div class="hero-cap text-center">
-                                <h2>Watch Shop</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Hero Area End-->
-        <!-- Latest Products Start -->
-        <section class="popular-items latest-padding">
-            <div class="container">
-                <div class="row product-btn justify-content-between mb-40">
-                    <div class="properties__button">
-                        <!--Nav Button  -->
-                        <nav>                                                      
-                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">NewestArrivals</a>
-                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false"> Price high to low</a>
-                                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false"> Most populer </a>
-                            </div>
-                        </nav>
-                        <!--End Nav Button  -->
-                    </div>
-                    <!-- Grid and List view -->
-                    <div class="grid-list-view">
-                    </div>
-                    <!-- Select items -->
-                    <div class="select-this">
-                        <form action="#">
-                            <div class="select-itms">
-                                <select name="select" id="select1">
-                                    <option value="">40 per page</option>
-                                    <option value="">50 per page</option>
-                                    <option value="">60 per page</option>
-                                    <option value="">70 per page</option>
-                                </select>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <!-- Nav Card -->
-                <div class="tab-content" id="nav-tabContent">
-                    <!-- card one -->
-                   <!-- card one -->
-<!-- card one -->
-<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-    <div class="row">
-        {% for i in product %}
-        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6">
-            <div class="single-popular-items mb-50 text-center">
-                <div class="popular-img">
-                    {% with product_image=i.productimage_set.first %}
-                        {% if product_image %}
-                    <img src="{{ product_image.image.url }}" alt="" >
-                            {% endif %}
-                    {% endwith %}
-                   <div class="img-cap" >
+    .search-box button {
+        background-color: #2c3e50;
+        /* change this color to match your theme */
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        border-radius: 0 25px 25px 0;
+        color: white;
+        font-size: 16px;
+    }
 
-                        <!-- <a href="{% url 'add_cart' %} ">
-                            <span>
-                                Add to cart
-                            </span>
-                        </a> -->
+    .search-box button:hover {
+        background-color: #34495e;
+        /* slightly darker shade for hover effect */
+    }
+</style>
 
+<style>
+    .small-image {
+        width: 50px;
+        height: auto;
+    }
+</style>
 
-                        <form method="POST" action="{% url 'add_cart' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="product_id" value="{{ i.id }}">
-                            <input type="hidden" name="product_count" value="1"> 
-                            <button type="submit" style="background-color: red; width: 150px; height: 50px;">Add to Cart</button>
-
-                        </form>
-                        
-                       
-                    </div>
-
-                    <div class="favorit-items">
-                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable wish-list" data-product_id="{{ i.id }}"> 
-                            <span class="flaticon-heart"  id="heart-{{ i.id }}" ></span>
-                        </a>
-                    </div>
-                    
-
-                </div>
-                <div class="popular-caption">
-                    <h3><a href="{% url 'product_view' i.id  %}">{{ i.product_name }}</a></h3>
-                    <span>${{ i.product_price }}</span>
-                </div>
-            </div>
-        </div>
-        {% if forloop.counter|divisibleby:4 and not forloop.last %}
-    </div>
-    <div class="row">
-        {% endif %}
-        {% endfor %}
-    </div>
+<main>
+   
+    
+ <!-- Product Search -->
+ <div class="container-fluid mt-3">
+    <form action="{% url 'home:search' %}" method="GET" class="search-box mb-4">
+        <input type="text" name="q" placeholder="Search..." class="mr-2">
+        <button type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
 </div>
 
 
 
-                    
+
+
+
+
+
+<div class="container-fluid">
+<!-- Category Filters (On the left) -->
+<div class="row">
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+        <div class="card">
+            <h3 class="mb-30">Filter</h3>
+
+            <!-- Begin Filter Form -->
+            <form action=" {% url 'home:filter_category' %} " method="post">
+                {% csrf_token %}
+                
+                <!-- Filter by Category -->
+                <div class="categories-dropdown-wrap font-heading">
+                    <h6>By Category</h6>
+                    <ul>
+                        {% for i in categories %}
+                        <li>
+                            <input data-filter="Category" class="form-check-input filter-checkbox" type="checkbox" name="category[]" value="{{i.id}}" />
+                            &nbsp;  &nbsp; 
+                            <label for="category_{{i.id}}">
+                                <img src="{{i.image.url}}" alt="" class="small-image"/> {{i.name}}
+                            </label>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
-                <!-- End Nav Card -->
-            </div>
-        </section>
-        <!-- Latest Products End -->
-        <!--? Shop Method Start-->
-        <!-- <div class="shop-method-area">
-            <div class="container">
-                <div class="method-wrapper">
-                    <div class="row d-flex justify-content-between">
-                        <div class="col-xl-4 col-lg-4 col-md-6">
-                            <div class="single-method mb-40">
-                                <i class="ti-package"></i>
-                                <h6>Free Shipping Method</h6>
-                                <p>aorem ixpsacdolor sit ameasecur adipisicing elitsf edasd.</p>
-                            </div>
+
+                <!-- Filter by Brand -->
+                <div class="brands-dropdown-wrap font-heading">
+                    <h6>By Brand</h6>
+                    <ul>
+                        {% for brand in brands %}
+                        <li>
+                            <input data-filter="Brand" class="form-check-input filter-checkbox" type="checkbox" name="brand[]" value="{{brand.id}}" />
+                            &nbsp;  &nbsp; 
+                            <label for="brand_{{brand.id}}">
+                                <img src="{{brand.brand_image.url}}" alt="" class="small-image"/> 
+                                {{brand.brand_name}}
+                            </label>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Submit Button for Filtering -->
+                <div class="filter-submit-wrap">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                </div>
+
+            </form> <!-- End Filter Form -->
+
+        </div>
+    </div>
+
+    
+
+<!-- Products Display (On the right) -->
+    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12">
+        <div class="row">
+        <!-- <div class="row" > -->
+            {% for i in product %}
+            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12" id="filtered_product">
+                <div class="single-popular-items mb-50 text-center">
+                    <div class="popular-img">
+                        {% with product_image=i.productimage_set.first %}
+                        {% if product_image %}
+                        <img src="{{ product_image.image.url }}" alt="">
+                        {% endif %}
+                        {% endwith %}
+                        <div class="img-cap">
+                            <form method="POST" action="{% url 'add_cart' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ i.id }}">
+                                <input type="hidden" name="product_count" value="1">
+                                <button type="submit" style="background-color: red; width: 150px; height: 50px;">Add to Cart</button>
+                            </form>
                         </div>
-                        <div class="col-xl-4 col-lg-4 col-md-6">
-                            <div class="single-method mb-40">
-                                <i class="ti-unlock"></i>
-                                <h6>Secure Payment System</h6>
-                                <p>aorem ixpsacdolor sit ameasecur adipisicing elitsf edasd.</p>
-                            </div>
-                        </div> 
-                        <div class="col-xl-4 col-lg-4 col-md-6">
-                            <div class="single-method mb-40">
-                                <i class="ti-reload"></i>
-                                <h6>Secure Payment System</h6>
-                                <p>aorem ixpsacdolor sit ameasecur adipisicing elitsf edasd.</p>
-                            </div>
-                        </div>
+                        <!-- <div class="favorit-items">
+                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable wish-list" data-product_id="{{ i.id }}">
+                                <span class="flaticon-heart" id="heart-{{ i.id }}"></span>
+                            </a>
+                        </div> -->
+                    </div>
+                    <div class="popular-caption">
+                        <h3><a href="{% url 'product_view' i.id %}">{{ i.product_name }}</a></h3>
+                        {% if i.offer or i.product_brand.offer %}
+                        <span>₹{{ i.get_offer }}</span>
+                        <del>₹ {{ i.product_price }}</del>
+                        {% else %}
+                        <span class="line-through">₹{{ i.product_price }}</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-        </div> -->
-        <!-- Shop Method End-->
-    </main>
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+        <!-- </div> -->
+        <div class="row">
+            {% endif %} 
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+    <!-- End Nav Card -->
+</section>
+</main>
+
+
+
+
+
+
+
+    <!-- Shop Method End-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
+    
     <script>
-        $('.wish-list').click(function (e) {
+        $('.wish-list').click(function(e) {
             e.preventDefault();
     
             var product_id = $(this).data('product_id');
             var add_size = $('select[name="size"]').val();
     
-            console.log(product_id,add_size, 'yyyyyyyyyyyyyyyyyyyyyyy1')
             $.ajax({
                 method: "POST",
                 url: "{% url 'add_wishlist' %}",
                 data: {
-    
                     'product_id': product_id,
-                    'add_size':add_size,
-                 
+                    'add_size': add_size,
                     csrfmiddlewaretoken: '{{ csrf_token }}'
                 },
-                success: function (response) {
-    
+                success: function(response) {
                     console.log(response);
     
-                    if (response.status === 'No such prodcut found' || response.status === 'Only few quantity available' || response.status === 'Product already in Wishlist' ) {
+                    if (response.status === 'No such product found' || response.status === 'Only few quantity available' || response.status === 'Product already in Wishlist') {
                         swal.fire("Error!", response.status, "error");
                         $('.cartdata').load(location.href + " .cartdata");
-                    } else if (response.status === 'Product added successfully in Wishlist') { 
+                    } else if (response.status === 'Product added successfully in Wishlist') {
                         swal.fire("", response.status, "success");
                         $('.cartdata').load(location.href + " .cartdata");
                     } else if (response.status === 'you are not login please Login to continue') {
                         swal.fire("", response.status, "warning");
                         $('.cartdata').load(location.href + " .cartdata");
-                    } 
-                    else if (response.status === 'Sorry! this variant not available') {
+                    } else if (response.status === 'Sorry! this variant not available') {
                         swal.fire("", response.status, "warning");
                         $('.cartdata').load(location.href + " .cartdata");
-                    } 
-                    else {
+                    } else {
                         swal("Error!", response.status, "error");
                         $('.cartdata').load(location.href + " .cartdata");
                     }
                 }
             });
-
-
-       
-
         });
     </script>
-   
     
+
+<!-- <script>
+    $(document).ready(function() {
+        $(".filter-checkbox").on("click", function(){            
+            let filter_object = {};
+            let filter_key = "Category";  
+            
+           
+            let checkedValues = $('.filter-checkbox:checked').map(function() {
+                return this.value;
+            }).get();
+            console.log(filter_object)
+            filter_object[filter_key] = checkedValues;
+            $.ajax({
+                url : "{% url 'home:filter_category' %}",
+                data : filter_object,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                dataType : "json",
+                beforeSend : function(){
+                    console.log("sending  data ..........");
+                },
+                success: function(response){
+                    console.log(response)
+                $("#filtered_product").html(response.data)
+
+                }
+            })  
+    
+        });
+    });
+    
+</script> -->
+
+
 {% endblock content %}

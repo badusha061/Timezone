@@ -80,7 +80,11 @@
                     <div class="column">
                         <h1 class="product-title">Product Name : {{product.product_name}}</h1>
                         <hr class="divider">
-                        <h3 class="product-price"> Product Price : {{product.product_price}}</h3>
+                        <h3 class="product-price"> Product Price:   {% if product.offer or product.brand.offer %}
+                            <span> ₹{{ product.get_offer }}</span> <del> ₹ {{ product.product_price }} </del>
+                            {% else %}
+                            <span class="line-through">₹ {{ product.product_price }}</span>
+                            {% endif %} </h3>
                         <hr class="divider">
                         <h3 class="product-brand"> Product Brand: {{product.product_brand}}</h3>
                         <hr class="divider">
