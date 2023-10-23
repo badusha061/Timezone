@@ -12,6 +12,9 @@ class Category(models.Model):
         verbose_name       ='Category'
         verbose_name_plural='name'
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Brand(models.Model):
     brand_name = models.CharField( max_length=50,blank=True,null=True)

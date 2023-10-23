@@ -12,7 +12,7 @@ class Product(models.Model):
     product_brand = models.ForeignKey(Brand,  on_delete=models.CASCADE , null=True)
     product_category = models.ForeignKey(Category,on_delete=models.CASCADE, null=True)
     product_image = models.ImageField(upload_to='product_image', default='NO image is available' , null=True , blank=True)
-    product_quantity = models.IntegerField()
+    product_quantity = models.IntegerField()    
     is_available = models.BooleanField(default=True)
     offer =  models.ForeignKey(Offer, on_delete=models.SET_NULL, null=True  )
 

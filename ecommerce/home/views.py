@@ -11,7 +11,7 @@ from userprofile.models import Address
 from coupon.models import CouponUsage
 from offer.models import Offer
 from django.core import serializers
-
+from banner.models import Banner
 # Create your views here.
 
 from django.shortcuts import render
@@ -19,7 +19,12 @@ from django.shortcuts import render
 # Create your views here.
 
 def index(request):
-    return render(request, 'home/index.html')
+    banner = Banner.objects.all() 
+
+    context = {
+        'banner':banner
+    }
+    return render(request, 'home/index.html',context)
 
 def about(request):
     return render(request, 'home/about.html' )

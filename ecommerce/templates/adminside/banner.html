@@ -1,0 +1,216 @@
+{% extends "adminside/adminbase.html" %}
+{% load static %}
+{% block dashbody %}
+
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+           
+        </div>
+ 
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+       
+        </header>
+        <!-- card-header end// -->
+        <div class="card-body">
+
+            <div class="row gx-3">
+                <div class="col-lg-2 col-6 col-md-3">
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#addCategory">
+                        <button type="submit" class="btn btn-primary"><i class="ti ti-plus"></i> Add banner</button>
+
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+              
+
+                <table class="table table-hover">
+                    <thead>
+                 
+                        <tr>
+                            <th scope="col">id</th>
+                            <th scope="col">image</th>
+                            <th scope="col">Banner name</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ban in banner %}
+                        <tr>
+                            <td> {{forloop.counter}} </td>
+                            <td>
+                                <div style="width: 50px;" class="overflow-hidden">
+                                    <img class="w-100" src="{{ban.banner_image.url}}" alt="">
+                                </div>
+                            </td>
+                            <td> {{ban.banner}} </td>
+                            <td> {{ban.caption}}  </td>
+                            <td>
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn spacer c"
+                                    style="background-color: rgb(246, 250, 10); color:rgb(102, 94, 94)"
+                                    data-bs-toggle="modal" data-bs-target="#confirmEdit{{forloop.counter}}"><i class="ti ti-edit"></i>
+                                Edit
+                                </button>
+                                
+
+
+
+
+                                <!--Edit Modal -->
+                                <div class="modal fade" id="confirmEdit{{forloop.counter}}" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title fs-5" id="exampleModalLabel">Edit Banner</h3>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" action="{% url 'edit_banner' ban.id %}"
+                                                    enctype="multipart/form-data">
+                                                    {% csrf_token %}
+
+                                                    <div style="width: 100px;"
+                                                        class="card-header category-img position-relative overflow-hidden bg-transparent border p-0">
+                                                        <img class="img-fluid w-100" src="{{ban.banner_image.url}}"
+                                                            alt="">
+                                                    </div>
+
+                                                    <div class="form-outline mb-4">
+                                                        <input name="image" type="file"
+                                                            accept="image/png, image/jpeg, image/svg"
+                                                            class="form-control" id="image-inputs" />
+                                                        <small id="image-errors"
+                                                            class="text-danger text-center"></small>
+                                                    </div>
+
+                                                    <div class="form-outline mb-4">
+                                                        <input name="banner_name" value="{{ban.banner}}" type="text"
+                                                            id="form3Example3cg" class="form-control form-control-lg" />
+                                                        <label class="form-label" for="form3Example3cg">Category
+                                                            name</label>
+                                                    </div>
+                                                    <div class="form-outline mb-4">
+                                                        <input name="banner_discription"
+                                                            value="{{ban.caption}}" type="text"
+                                                            id="form3Example3cg" class="form-control form-control-lg" />
+                                                        <label class="form-label"
+                                                            for="form3Example3cg">Description</label>
+                                                    </div>
+                                                    <div class="d-flex justify-content-center">
+                                                        <button type="submit"
+                                                            class="btn btn-primary btn-lg gradient-custom-4 w-50 text-light"
+                                                            type="submit">Save Changes</button>
+                                                    </div>
+
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Button trigger modal -->
+
+                                <button type="button" class="btn btn c"
+                                    style="background-color: rgb(239, 7, 54); color:rgb(255, 255, 255)"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModal{{forloop.counter}}"><i class="ti ti-trash"></i>
+                                    Delete
+                                </button>
+                            </td>
+                            <!-- Modal  for delete the Category -->
+                            <div class="modal fade" id="exampleModal{{forloop.counter}}" tabindex="-1"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            delete Banner {{ban.banner}}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <!-- one here -->
+                                            <form action="{% url 'delete_banner' ban.id %} ">
+
+                                                <button type="submit" class="btn btn"
+                                                    style="background-color: rgb(239, 7, 54); color:rgb(255, 255, 255)">Confirm</button>
+                                            </form>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- table-responsive //end -->
+        </div>
+        <!-- card-body end// -->
+    </div>
+    <!-- card end// -->
+
+</section>
+
+<div class="modal fade" id="addCategory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Banner</h1>
+                <br>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form action="{% url 'add_banner' %} " enctype="multipart/form-data" method="POST">
+                    {% csrf_token %}
+                    <div style="width: 100px;" class="">
+                    </div>
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="form3Example3cg">Name</label>
+                        <input name="banner_name" value="" type="text" id="form3Example3cg"
+                            class="form-control form-control-lg" />
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="form3Example3cg">Image</label>
+                        <input name="banner_image" type="file" accept="image/png, image/jpeg, image/svg, image/avif, image/WEBP"
+                            class="form-control" id="image-input" />
+                        <small id="image-error" class="text-danger text-center"></small>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="form3Example3cg">Description</label>
+                        <input name="banner_discription" value="" type="text" id="form3Example3cg"
+                            class="form-control form-control-lg" />
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-danger btn-lg gradient-custom-4 w-50 text-light"
+                            type="submit">Save </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

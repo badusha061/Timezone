@@ -46,6 +46,29 @@
     }
 </style>
 
+<style>
+    .offer-label {
+        display: inline-block; /* To fit the content width */
+        background-color: red;
+        color: white;
+        padding: 5px 10px;
+        font-weight: bold;
+        border-radius: 20px; /* Rounded edges for badge-like appearance */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+        z-index: 1;
+        position: relative; /* You can use absolute positioning within a parent if you want to place it at a specific location on your product. */
+    }
+    
+    .offer-label span {
+        margin-left: 5px; /* Some spacing */
+        font-size: 1.2em; /* Make the percentage slightly larger */
+        vertical-align: middle; /* Align with the text */
+    }
+    
+    
+</style>
+
+
 <main>
    
     
@@ -129,12 +152,23 @@
             {% for i in product %}
             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12" id="filtered_product">
                 <div class="single-popular-items mb-50 text-center">
+                 
+                    {% if i.offer %}
+                    <div class="offer-label">Offer! <span>{{i.offer.discount_amount}}%</span> off</div>
+                {% endif %} 
+
                     <div class="popular-img">
+                
+
                         {% with product_image=i.productimage_set.first %}
-                        {% if product_image %}
+                      
+                        {% if product_image %}  
                         <img src="{{ product_image.image.url }}" alt="">
                         {% endif %}
                         {% endwith %}
+
+                     
+
                         <div class="img-cap">
                             <form method="POST" action="{% url 'add_cart' %}">
                                 {% csrf_token %}

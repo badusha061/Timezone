@@ -65,19 +65,23 @@
     
                     <form method="post" action="{% url 'userauth:register' %}">
                       {% csrf_token %}
+
                       <div class="form-outline mb-4">
                         <label class="form-label" for="username">Username</label>
-                        <input type="text" id="username" class="form-control form-control-lg" name="username"  />
+                        <input type="text" id="username" class="form-control form-control-lg" name="username" pattern="[a-zA-Z0-9]{5,15}" title="Username must be alphanumeric and between 5-15 characters"  />
+                        <span id="usernameFeedback"></span>
                       </div>
                     
                       <div class="form-outline mb-4">
                         <label class="form-label" for="email">Email</label>
-                        <input type="email" id="email" class="form-control form-control-lg" name="email"  />
+                        <input type="email" id="email" class="form-control form-control-lg" name="email" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" title="Please enter a valid email address" />
+                        <span id="emailFeedback"></span>
                       </div>
 
                       <div class="form-outline mb-4">
                         <label class="form-label" for="email">Gender</label>
-                        <input type="text" id="gender" class="form-control form-control-lg" name="gender"  />
+                        <input type="text" id="gender" class="form-control form-control-lg" name="gender"  pattern="male|female|other" title="Please enter 'male', 'female', or 'other'" />
+                        <span id="genderFeedback"></span>
                       </div>
       
 
@@ -128,4 +132,31 @@
       </section>
     </main> 
 {% endif %}
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    function setupValidation(inputId, feedbackId) {
+      const inputElem = document.getElementById(inputId);
+      const feedbackElem = document.getElementById(feedbackId);
+  
+      inputElem.addEventListener('input', function() {
+          if (inputElem.validity.patternMismatch) {
+              feedbackElem.textContent = inputElem.title;
+          } else {
+              feedbackElem.textContent = ''; // Clear the error message if input matches the pattern
+          }
+      });
+  }
+  
+  // Set up validation for each input
+  setupValidation('username', 'usernameFeedback');
+  setupValidation('email', 'emailFeedback');
+  setupValidation('userGender', 'genderFeedback');
+    
+});
+ 
+
+</script>
+
 {% endblock content %}

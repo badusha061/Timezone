@@ -46,6 +46,10 @@ $(document).ready(function() {
                 url: "placeorder",
                 data: postData,
                 success: function(responsec) {
+                    
+                    var userOrderUrl = "{% url 'user_order' %}";
+                    window.location.href = userOrderUrl;
+
                     Swal.fire("Congratulations!", responsec.status, "success")
                 },
                 error: function(xhr, status, error) {
@@ -129,6 +133,7 @@ $(document).ready(function() {
                                 data: postData,
                                 success: function(responsec) {
                                     Swal.fire("Order has been placed", responsec.status, "success")
+                                    
                                 },
                                 error: function(xhr, status, error) {
                                     console.error("AJAX error in POST:", status, error);
@@ -140,9 +145,7 @@ $(document).ready(function() {
                     var rzp1 = new Razorpay(options);
                     rzp1.open();
                 },
-                error: function(xhr, status, error) {
-                    console.error("AJAX error in GET:", status, error);
-                }
+            
             });
         }
     });

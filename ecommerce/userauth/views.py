@@ -56,28 +56,28 @@ def register_views(request):
                 refferal_code = request.POST.get('referal_offer')
                 
                     
-                # validation field is empty
-                # if username.strip() == '' or email.strip() == '' or   password1.strip() == '' or password2.strip() == '' or gender.strip() == '': 
-                #     messages.info(request , ' field is empty!')
-                #     return render(request, 'user/register.html')
-                # elif Customer.objects.filter(username=username).exists():
-                #     messages.info(request, ' username is already taken')
-                #     return render(request, 'user/register.html')
-                # elif Customer.objects.filter(email = email).exists():
-                #         messages.info(request, ' email is already taken')
-                #         return render(request, 'user/register.html')
+                 #validation field is empty
+                if username.strip() == '' or email.strip() == '' or   password1.strip() == '' or password2.strip() == '' or gender.strip() == '': 
+                    messages.info(request , ' field is empty!')
+                    return render(request, 'user/register.html')
+                elif Customer.objects.filter(username=username).exists():
+                    messages.info(request, ' username is already taken')
+                    return render(request, 'user/register.html')
+                elif Customer.objects.filter(email = email).exists():
+                        messages.info(request, ' email is already taken')
+                        return render(request, 'user/register.html')
 
-                # elif password1 != password2:
-                #     messages.info(request,'password do not match')
-                #     return render(request, 'user/register.html')
-                # email_check = validator_email(email)
-                # if email_check is False:
-                #     messages.info(request, 'email is not valid ')
-                #     return render(request, 'user/register.html')
-                # password_check = validator_password(password1)
-                # if password_check is False:
-                #     messages.info(request, 'Please enter a strong password!')
-                #     return render(request, 'user/register.html')
+                elif password1 != password2:
+                    messages.info(request,'password do not match')
+                    return render(request, 'user/register.html')
+                email_check = validator_email(email)
+                if email_check is False:
+                    messages.info(request, 'email is not valid ')
+                    return render(request, 'user/register.html')
+                password_check = validator_password(password1)
+                if password_check is False:
+                    messages.info(request, 'Please enter a strong password!')
+                    return render(request, 'user/register.html')
                 
 
                 if refferal_code:

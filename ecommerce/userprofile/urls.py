@@ -13,6 +13,7 @@ urlpatterns = [
     path('edit_image',views.edit_image , name='edit_image'),
     
 
-    path('wallet',views.wallet , name='wallet' )
+    path('wallet',views.wallet , name='wallet' ),
+    path('chatbox',views.chat_box, name='chatbox')
 
 ]   

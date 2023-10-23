@@ -19,6 +19,7 @@ urlpatterns = [
     path('coupon/',include('coupon.urls')),
     path('wishlist/',include('wishlist.urls')),
     path('offer/',include('offer.urls')),
+    path('banner/',include('banner.urls')),
    
 
 ] +static(settings. MEDIA_URL,document_root=settings.MEDIA_ROOT)

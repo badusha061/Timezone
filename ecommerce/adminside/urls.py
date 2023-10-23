@@ -14,5 +14,7 @@ urlpatterns = [
     path('user_block_status',views.user_block_status , name='user_block_status'),
     path('adminpage',views.adminpage, name='adminpage'),
 
+
+    path('sales_report',views.sales_report , name='sales_report'),
     
 ]

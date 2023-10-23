@@ -22,13 +22,12 @@ def checkout(request):
     total = 0
     for item in cart_item:
         print(item.total_price)
-        total += item.total_price
+        total = item.total_price
     if coupon_usage:
         for item in coupon_usage:
             print(item.total_price)
             total = item.total_price
     
-
     context = {
         'cart_items':cart_item,
         'total':total,
@@ -230,22 +229,9 @@ def placeorder(request):
                 total = i.total_price
         else:
             for item in cart:
-                product_price = item.product.product_price
-                product_offer = item.product.offer
-                brand_offer = item.product.product_brand.offer
+                total = item.total_price
+                
 
-            if product_offer is  None and brand_offer is None:
-                total  += product_price * item.quantity
-            else:
-                if product_offer and brand_offer:
-                    disount = max(product_offer.discount_amount , brand_offer.discount_amount)
-                elif product_offer:
-                    disount = product_offer.discount_amount
-                else:
-                    disount = brand_offer.discount_amount
-                disount_price = (disount/100)*product_price
-                disount_amount = product_price - disount_price
-                total += disount_amount * item.quantity 
         if payment_mode == 'wallet':
             wallet_qs = Wallet.objects.filter(user=request.user)
             if not wallet_qs.exists():

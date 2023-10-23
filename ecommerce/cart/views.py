@@ -5,7 +5,7 @@ from django.http.response import JsonResponse
 from .models import Cart
 from coupon.models import Coupon , CouponUsage
 from django.db.models import Sum , F
-from decimal import Decimal
+from decimal import Decimal , ROUND_DOWN
 
 # Create your views here.
 
@@ -96,7 +96,7 @@ def add_cart(request ):
                         disocunt = 0
                     max_discout = (disocunt/100)*product_price
                     after = product_price - max_discout
-                    cart_obj =  Cart.objects.create(user=request.user,product_id = prod_id,quantity = product_qty ,total_price = after)
+                    cart_obj =  Cart.objects.create(user=request.user,product_id = prod_id,quantity = product_qty ,total_price = after , single_total = after )
                     cart_obj.save()
                     messages.success(request,'Product Added Successfully')
                     return redirect('cart')
@@ -151,13 +151,17 @@ def update_cart(request):
                                 max_discount = brand_offer.discount_amount
                             else:
                                 max_discount = 0
-                            
                             discount = Decimal((max_discount/100)*product_price)
+                            discount = discount.quantize(Decimal('0.01'), rounding=ROUND_DOWN)
+                            
                             discount_price = product_price - discount
                             single_price = discount_price * item.quantity 
                             it = Cart.objects.filter(user = request.user)
                             total = 0
                             grand_total = {}
+                            print('the discount price is the',discount)
+                            print('the discount total price is the ',discount_price)
+                            print('the product single price is the',single_price)
                             for i in it:
                                 if action == 'increment':
                                     i.total_price +=  Decimal(discount_price)

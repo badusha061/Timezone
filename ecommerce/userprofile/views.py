@@ -237,12 +237,14 @@ def delete_address(request,deleteaddress_id):
 def edit_image(request):
     if request.method == 'POST':
         images = request.FILES.get('user_image')
+
         #validatings the field is empty
-        if image is None:
+        if images is None:
             messages.error(request  ,'Image fields is empty')
             return redirect('userprofile')
         
         image = User.objects.get(id = request.user.id)
+        print('the images is the ',image)
         if image:
             cus = Customer.objects.get(username = image)
             cus.images = images
@@ -270,3 +272,7 @@ def wallet(request):
     return render(request,'user/wallet.html',context)
 
 
+
+
+def chat_box(request):
+    return render(request, 'user/chat.html')

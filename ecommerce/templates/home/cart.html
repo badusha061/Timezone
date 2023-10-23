@@ -9,6 +9,59 @@
 </style>
 
 
+<style>
+    .cart__acount {
+        border: 1px solid #eaeaea;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .cart__acount h5 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+        font-weight: bold;
+        border-bottom: 1px solid #eaeaea;
+        padding-bottom: 10px;
+    }
+    
+    .cart__acount table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .cart__acount td {
+        padding: 10px 0;
+        vertical-align: top;
+        color: #555;
+    }
+    
+    .cart__acount .first-child td {
+        border-bottom: 1px solid #eaeaea;
+    }
+    
+    .cart__acount .first-child.lastchild td {
+        padding-bottom: 20px;
+    }
+    
+    .cart__acount input[type="submit"] {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .cart__acount input[type="submit"]:hover {
+        background-color: #555;
+    }
+    
+</style>
+
 
 <main>
 
@@ -62,7 +115,6 @@
                               
                                 <td>
                                     <div id="singlePriceDisplay{{i.product.id}}">
-                                            {{single_price}}
                                     </div>
                                 </td>                        
                                 <td>
@@ -73,6 +125,9 @@
                                 </td>
                             </tr>
                             {% endfor %}
+
+              
+
                         </tbody>
                     </table>
                 </div>
@@ -95,7 +150,7 @@
                                                     </a>
                                                     </li>
                                             </div>
-
+<!-- 
                                             <div class="col-lg-6 d-flex align-items-center">
                                                 <div class="column">
                                                     <hr class="divider">
@@ -107,13 +162,52 @@
                                                     </h3>
                                                 
                                                     <hr class="divider">
-                                                    <h3 class="product-category"> After Discount : <span id="grand_total">{% if after_discount != None %}{{after_discount}}{% else %}{{total_price}}{% endif %}</span></h3>
-                                                </div>
-                                                
-                                            </div>
+                                                    <h3 class="product-category"> After Discount : <span id="grand_total">
+                                                        {% if after_discount != None %}
+                                                        {{after_discount}}
+                                                        {% else %}
+                                                        <h5>No Coupon Apply</h5>
+                                                        {% endif %}
+                                                    </span></h3>
+                                                </div>            -->
+
+                                                                               
+                    <div class="col-xl-4 col-lg-4 col-md-12">
+                        <div class="cart__acount">
+                            <h5>Cart totals</h5>
+                          <table>
+                              <tr class="first-child">
+                                  <td>Total:</td>
+                                  <td id="dispricecounted">$ {{total_price}} </td>
+                              </tr>
+                              <tr class="first-child lastchild">
+                                  <td>Product Discount:</td>
+                                  <td id="discount">{{discount}}</td>
+                                  <!-- {% if discount %}
+                                  <td id="discount"> {{discount}} </td>
+                                  {% else %}
+                                  <td> No Discount </td>
+                                  {% endif %} -->
+                              </tr>
+                              <tr class="first-child">
+                                  <td>After Discount:</td>
+                                {% if after_discount != None %}
+                                  <td >$ {{after_discount}} </td>
+                                  {%  else %}
+                                  <td id="grand_total">No Coupon Apply</td>
+                                {% endif %}
+                              </tr>
+                              <tr>   
+                                  <td colspan="2">
+                                    <a class="btn_1 checkout_btn_1" href="{% url 'checkout' %}">Proceed to checkout</a> 
+                                  </td>
+                              </tr>
+                          </table>
+                        </div>
+                    </div>
+
                                             <div class="checkout_btn_inner float-right">
                                                 <a class="btn_1" href="{% url 'home:shop' %}">Continue Shopping</a>
-                                                <a class="btn_1 checkout_btn_1" href="{% url 'checkout' %}">Proceed to checkout</a>
                                             </div>
                                         </div>
                     </div>
@@ -268,6 +362,7 @@
                           })
                     } else if  (response.status == 'Cart Updated Successfully'){
                         console.log('the product price is the',response.total)
+                        console.log('the product single price is the',response.single_price)
                         document.getElementById('dispricecounted').textContent = response.total;
                         document.getElementById('singlePriceDisplay'+productId).textContent = response.single_price;
                         $('#singlePriceDisplay').text(single_price).toFixed(2);

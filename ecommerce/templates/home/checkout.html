@@ -20,8 +20,14 @@
                                 </li>
                             {% for item in cart_items %}
                                 <li class="mb-3">
+                                    
                                     {{ item.product.product_name}} x {{item.quantity}}
-                                    <span class="float-right">${{ item.product.product_price }}</span>
+                                    {% if item.product.offer or item.product.product_brand.offer %}
+                                    <del>₹ {{ item.product.product_price }}</del>
+                                    <span class="float-right">₹{{ item.product.get_offer }}</span>
+                                    {% else %}
+                                    <span class="float-right">₹{{ item.product.product_price }}</span>
+                                    {% endif %}
                                 </li>
                             {% endfor %}
 
