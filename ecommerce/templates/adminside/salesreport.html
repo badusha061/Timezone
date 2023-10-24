@@ -20,9 +20,9 @@
                                 <form style="margin-left: 20%; font-size: large;" method='POST' action="{% url 'adminside:sales_report' %}">
                                     {% csrf_token %}
                                     <label for="start_date">Start Date:</label>
-                                    <input type="date" id="start-date"  name='start_date' >
+                                    <input type="date" id="start-date"  name='start_date'  value="{{ sales_report.start_date }}" >
                                     <label for="end_date">End Date:</label>
-                                    <input type="date" id="end-date" name='end_date'>
+                                    <input type="date" id="end-date" name='end_date' value="{{ sales_report.end_date }}" >
                                     <button type="submit" class="btn btn-primary">Generate Report</button>
                                 </form>
 
@@ -41,7 +41,15 @@
                                         <li>Return: {{sales_report.sales_by_status.Return}}</li>
                                     </ul>
                                 </div>
-                                <h2 style="margin-top: 5%;">All Orders</h2>
+                                <h2 style="margin-top: 5%;">{% if sales_report.start_date and sales_report.end_date %}All Orders{% else %}Recent Orders{% endif %}</h2>
+                                {% if sales_report.start_date and sales_report.end_date %}
+                                <a href="{% url 'adminside:export_csv' %}" class="btn btn-success">
+                                    Download CSV <i class="mdi mdi-file-excel" style="font-size: x-large;"></i>
+                                  </a>
+                                <a href="{% url 'adminside:pdf' %}" class="btn btn-danger" >
+                                    Download PDF <i class="mdi mdi-file-pdf" style="font-size: x-large;"></i>
+                                  </a>
+                                  {% endif %}
                                 <div class="table-responsive">
                                     <table id="example" class="display nowrap mt-5 table" style="width:100%">
                                         <thead>

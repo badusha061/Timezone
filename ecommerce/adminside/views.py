@@ -1,3 +1,4 @@
+from itertools import groupby
 from django.shortcuts import render , redirect
 from django.contrib import messages , auth
 from django.contrib.auth import authenticate , login , logout
@@ -9,6 +10,10 @@ from django.views import View
 from datetime import datetime
 from datetime import date
 from order.models import Order , OrderCancel , OrderItem , OrderReturn
+import csv 
+from django.http import HttpResponse
+from fpdf import FPDF
+from django.db.models import Prefetch
 # Create your views here.
 
 
@@ -180,9 +185,11 @@ def adminpage(request):
 @login_required(login_url = 'adminside:admin_login')
 def sales_report(request):
     print(request.method)
-    if request.method == 'GET':
-        start_date = request.GET.get('start_date')
-        end_date = request.GET.get('end_date')
+    start_date = None
+    end_date = None
+    if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
     
         if start_date and end_date:
             start_date = datetime.strptime(start_date,'%Y-%m-%d').date()
@@ -196,8 +203,8 @@ def sales_report(request):
                 return redirect('adminside:dashboard')
             orders = Order.objects.filter(created_at__date__range=(start_date,end_date))
             recend = orders.order_by('created_at')
-        else:
-            pass
+        else:   
+            recend = Order.objects.order_by('created_at')[:10]
     recend = Order.objects.order_by('created_at')[:10]
     orders = Order.objects.all()
     total_sale = sum(order.total_price for order in orders)
@@ -211,6 +218,7 @@ def sales_report(request):
         'Cancelled':orders.filter(od_status = 'Cancelled').count(),
         'Return':orders.filter(od_status = 'Return').count()
         }
+
     sales_report = {
         'start_date': start_date.strftime('%Y-%m-%d') if start_date else '',
         'end_date': end_date.strftime('%Y-%m-%d') if end_date else '',
@@ -224,4 +232,80 @@ def sales_report(request):
     }
     print('the total sale is the ',total_sale)
     return render(request,'adminside/salesreport.html',context)
+
+
+@login_required(login_url = 'adminside:admin_login')
+def export_csv(request):
+    response = HttpResponse(content_type = 'text/csv')
+    response['Content-Disposition'] = 'attachment; filename=Expenses' + \
+        str(datetime.now()) + '.csv'
     
+    writer = csv.writer(response)
+    # heading for csv 
+    writer.writerow(['user','total_price','payment_mode','tracking number', 'Order at','product_name','product_price','product_quantity'])
+
+    orders = Order.objects.all()
+    for order in orders:
+        order_item = OrderItem.objects.filter(order = order).select_related('product')
+        grouped_order_items = groupby(order_item, key=lambda x: x.order_id)
+        for order_id , items_group in grouped_order_items:
+            item_list = list(items_group)
+            for order_item in item_list:
+                writer.writerow([
+                    order.user.username if order_item == item_list[0] else " ",
+                    order.total_price if order_item == item_list[0] else " ",
+                    order.payment_mode if order_item == item_list[0] else " ",
+                    order.tracking_no if order_item == item_list[0] else " ", 
+                    order.created_at if order_item == item_list [0] else " ", 
+                    order_item.product.product_name ,
+                    order_item.product.product_price ,
+                    order_item.quantity
+                ])
+    return response
+
+@login_required(login_url = 'adminside:admin_login')
+def pdf(request):
+    response =HttpResponse(content_type = 'application/pdf')
+    response['Content-Disposition'] = 'attachment; filename=Expenses' + \
+        str(datetime.now()) + '.pdf'
+    
+    w_pt = 8.5 * 40  # 8.5 inches width
+    h_pt = 11 * 20   # 11 inches hieght 
+
+    pdf = FPDF(format=(w_pt, h_pt))
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15) 
+
+    #set the style 
+    pdf.set_font('Arial', 'B', 12)
+
+    # Header Information
+    pdf.cell(0, 10, 'Order Details Report', 0, 1, 'C')
+    pdf.cell(0, 10, str(datetime.now()), 0, 1, 'C')
+    
+    data = [['user','Toatl price','Payement Mode','Tracking Number','Odered_at', 'Product Name','Product Price','Prduct Quantity']]
+    orders = Order.objects.all().prefetch_related(
+        Prefetch('orderitem_set', queryset = OrderItem.objects.select_related('product'))
+    )
+    for order in orders:
+        order_item = order.orderitem_set.all()
+        for index , order_item in enumerate(order_item):
+            data.append([
+                order.user.username if index == 0 else "",
+                order.total_price if index == 0 else "",
+                order.payment_mode if index == 0 else "",
+                order.tracking_no if index == 0 else "",
+                str(order.created_at.date()) if index == 0 else "",
+                order_item.product.product_name , 
+                order_item.product.product_price ,
+                order_item.quantity,
+            ])
+    # Create Table
+    col_width = 40  
+    row_height = 10
+    for row in data:
+        for item in row:
+            pdf.cell(col_width, row_height, str(item), border=1)
+        pdf.ln()
+    response.write(pdf.output(dest='S').encode('latin1'))  
+    return response

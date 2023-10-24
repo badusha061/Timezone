@@ -31,7 +31,7 @@ class Order(models.Model):
     def __str__(self):
         return f"{self.id, self.user.username}"
     
-class   OrderItem(models.Model):
+class  OrderItem(models.Model):
     user = models.ForeignKey( User,on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product =models.ForeignKey(Product, on_delete=models.CASCADE)
