@@ -61,11 +61,19 @@ def register_views(request):
                     messages.info(request , ' field is empty!')
                     return render(request, 'user/register.html')
                 elif Customer.objects.filter(username=username).exists():
-                    messages.info(request, ' username is already taken')
-                    return render(request, 'user/register.html')
-                elif Customer.objects.filter(email = email).exists():
-                        messages.info(request, ' email is already taken')
+                    user1 = Customer.objects.get(username = username)
+                    if user1.last_login is None:
+                        user1.delete()
+                    else:
+                        messages.info(request, ' username is already taken')
                         return render(request, 'user/register.html')
+                elif Customer.objects.filter(email = email).exists():
+                        user = Customer.objects.get(email = email)
+                        if user.last_login is None:
+                            user.delete()
+                        else:
+                            messages.info(request, ' email is already taken')
+                            return render(request, 'user/register.html')
 
                 elif password1 != password2:
                     messages.info(request,'password do not match')
@@ -88,7 +96,7 @@ def register_views(request):
                         wallet, created = Wallet.objects.get_or_create(user=referrer)
                         if created:
                             wallet.wallet = 0
-                            wallet.user = referrer                    # Initialize the wallet amount if it's a new wallet.
+                            wallet.user = referrer    # Initialize the wallet amount if it's a new wallet.
                         wallet.wallet += 100
                         wallet.save()
                         print('saved the to the wallet')
@@ -152,6 +160,9 @@ def generate_referral_code():
 
 
 def user_login(request):
+    if request.user.is_authenticated:
+        return redirect('userprofile')
+    
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']

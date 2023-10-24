@@ -21,7 +21,9 @@
                 
               </div>
             </div>
-            <div id="chart"></div>
+           <div id="chart1">
+            
+           </div>
           </div>
         </div>
       </div>
@@ -52,7 +54,7 @@
                         <span class="round-8 bg-warning rounded-circle me-2 d-inline-block"></span>
                         <span class="fs-2">cancel</span>
                       </div>
-                      <p style="color: aliceblue;">--</p>
+                      <p style="color: aliceblue;"></p>
                       <div>
                         <span class="round-8 bg-danger rounded-circle me-2 d-inline-block"></span>
                         <span class="fs-2">Return</span>
@@ -61,7 +63,7 @@
                   </div>
                   <div class="col-4">
                     <div class="d-flex justify-content-center">
-                      <div id="breakup"></div>
+                      <div id="breakup1"></div>
                     </div>
                   </div>
                 </div>
@@ -338,7 +340,7 @@
 
   };
 
-  var chart = new ApexCharts(document.querySelector("#chart"), chart);
+  var chart = new ApexCharts(document.querySelector("#chart1"), chart);
   chart.render();
 
   var status_delivery = {{ status_delivery }};
@@ -398,7 +400,7 @@
     },
   };
 
-  var chart = new ApexCharts(document.querySelector("#breakup"), breakup);
+  var chart = new ApexCharts(document.querySelector("#breakup1"), breakup);
   chart.render();
 
 

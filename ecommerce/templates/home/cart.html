@@ -62,9 +62,35 @@
     
 </style>
 
+<style>
+        .empty-cart-notification {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150px;
+            border: 2px dashed #ff6f61;
+            background-color: #ffefed;
+            border-radius: 8px;
+            color: #d43f00;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .empty-cart-notification:hover {
+            background-color: #ffdcd7;
+            transition: background-color 0.3s ease-in-out;
+        }
+        
+</style>
+
+
 
 <main>
-
+    {% if cart %}
     <section class="cart_area section_padding">
         <div class="container">
             <div class="cart_inner">
@@ -197,7 +223,7 @@
                                   <td id="grand_total">No Coupon Apply</td>
                                 {% endif %}
                               </tr>
-                              <tr>   
+                              <tr>  
                                   <td colspan="2">
                                     <a class="btn_1 checkout_btn_1" href="{% url 'checkout' %}">Proceed to checkout</a> 
                                   </td>
@@ -212,6 +238,15 @@
                                         </div>
                     </div>
         </section>
+        {% else %}
+        <div class="empty-cart-notification">
+            You do not have any items in your cart.
+        </div>
+        <div class="checkout_btn_inner float-right">
+            <a class="btn_1" href="{% url 'home:shop' %}">Continue Shopping</a>
+        </div>
+        
+        {% endif %}
         <!--================End Cart Area =================-->
 </main>
 

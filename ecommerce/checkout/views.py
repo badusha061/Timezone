@@ -10,32 +10,39 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse 
 from product.models import Product
 import random
+import re
+from django.core.validators import validate_email
+from django.forms import ValidationError
 
 # Create your views here.
 
 def checkout(request):
     cart_item = Cart.objects.filter(user = request.user)
-    address_item = Address.objects.filter(user=request.user)
-    coupon = Coupon.objects.all()
-    coupon_usage = CouponUsage.objects.filter(user = request.user)
+    if cart_item:
+        address_item = Address.objects.filter(user=request.user)
+        coupon = Coupon.objects.all()
+        coupon_usage = CouponUsage.objects.filter(user = request.user)
 
-    total = 0
-    for item in cart_item:
-        print(item.total_price)
-        total = item.total_price
-    if coupon_usage:
-        for item in coupon_usage:
+        total = 0
+        for item in cart_item:
             print(item.total_price)
             total = item.total_price
-    
-    context = {
-        'cart_items':cart_item,
-        'total':total,
-        'address_item':address_item,
-        'coupon':coupon,
-        'coupon_usage' : coupon_usage,
-    }
-    return render(request,'home/checkout.html',context)
+        if coupon_usage:
+            for item in coupon_usage:
+                print(item.total_price)
+                total = item.total_price
+        
+        context = {
+            'cart_items':cart_item,
+            'total':total,
+            'address_item':address_item,
+            'coupon':coupon,
+            'coupon_usage' : coupon_usage,
+        }
+        return render(request,'home/checkout.html',context)
+    else:
+        return render(request,'home/checkout.html')
+
 
 
 def add_address_check(request):
@@ -65,9 +72,22 @@ def add_address_check(request):
         if number.strip() == '':
             messages.error(request, 'Number feilds is empty')
             return redirect('add_address_check')
+        if not re.search(re.compile(r'(\+91)?(-)?\s*?(91)?\s*?(\d{3})-?\s*?(\d{3})-?\s*?(\d{4})'),number):
+            messages.error(request,'Enter valid phone number')
+            return redirect('userprofile')
+        phonenumber_checkings = len(number)
+        if not phonenumber_checkings == 10:
+            messages.error(request, 'Phone Number should be 10 digits')
+            return redirect('userprofile')
+        
         if email.strip() == '':
             messages.error(request, 'Email feild is empty')
             return redirect('add_address_check')
+        email_check = validator_email(email)
+        if email_check is False:
+            messages.error(request, 'Email is not valid')
+            return redirect('userprofile')
+        
         if address_user.strip() == '':
             messages.error(request , 'Address feilds is empty')
             return redirect('add_address_check')
@@ -83,6 +103,10 @@ def add_address_check(request):
         if pincode.strip() == '':
             messages.error(request , 'Pincode is empty')
             return redirect('add_address_check')
+        
+        if not re.search(re.compile(r'^\d{6}$'),pincode):
+            messages.error(request,'Should only 6 contain numeric')
+            return redirect('userprofile')
 
         #creatings address
         address_item = Address.objects.create(
@@ -310,3 +334,10 @@ def generate_tracking():
     return track_no
 
 
+
+def validator_email(email):
+    try:
+        validate_email(email)
+        return True
+    except ValidationError:
+        return False

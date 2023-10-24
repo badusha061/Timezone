@@ -32,7 +32,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
-        
+
   
 
 </head>
@@ -74,9 +74,7 @@
                                     <li><a href="{% url 'home:home' %}">Home</a></li>
                                     <li><a href="{% url 'home:shop' %}">shop</a></li>
                                     <li><a href="{% url 'cart' %}">Cart</a></li>
-                                    <li><a href="{% url 'wishlist' %}">Wishlist</a>
                                     </li>
-                                    <li><a href="{% url 'checkout' %}">Product Checkout</a>
                                     </li>
                                     {% if user.is_authenticated %}
                                     <li><a href="{% url 'userauth:user_logout' %}">Logout</a>

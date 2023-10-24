@@ -2,6 +2,11 @@
 {% load static %}
 {% block content %}
 
+<style>
+    #usernameFeedback ,#passwordFeedback {
+        color: red;
+    }
+</style>
     <main>
         <!-- Hero Area Start--> 
         <div class="slider-area ">
@@ -44,12 +49,12 @@
                                 <form class="row contact_form" action="{% url 'userauth:user_login' %}" method="post" novalidate="novalidate">
                                             {% csrf_token %}                                    
                                     <div class="col-md-12 form-group p_star">
-                                        <input type="text" class="form-control" id="name" name="username" value=""
-                                            placeholder="Username">
+                                        <input type="text" class="form-control" id="username" name="username" value=""  placeholder="Username" pattern="[a-zA-Z0-9]{5,15}" title="Username must be alphanumeric and between 5-15 characters">
+                                        <span id="usernameFeedback"></span>
                                     </div>
                                     <div class="col-md-12 form-group p_star">
-                                        <input type="password" class="form-control" id="password" name="password" value=""
-                                            placeholder="Password">
+                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"  title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"  >
+                                        <span id="passwordFeedback"></span>
                                     </div>
                                     <div class="col-md-12 form-group">
                                         <div class="creat_account d-flex align-items-center">
@@ -88,4 +93,32 @@
         </section>
         <!--================login_part end =================-->
     </main>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          function setupValidation(inputId, feedbackId) {
+            console.log('calling this function')
+            const inputElem = document.getElementById(inputId);
+            const feedbackElem = document.getElementById(feedbackId);
+        
+            inputElem.addEventListener('input', function() {
+                if (inputElem.validity.patternMismatch) {
+                    feedbackElem.textContent = inputElem.title;
+                } else {
+                    feedbackElem.textContent = ''; // Clear the error message if input matches the pattern
+                }
+            });
+        }
+        
+        // Set up validation for each input
+        setupValidation('username', 'usernameFeedback');
+        setupValidation('password', 'passwordFeedback');
+   
+          
+      });
+       
+      
+      </script>
+      
 {% endblock content %}

@@ -8,6 +8,9 @@ from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import authenticate
 from userauth.models import Customer
+import re
+from django.core.validators import validate_email
+from django.forms import ValidationError
 # Create your views here.
 
 def userprofile(request):
@@ -64,9 +67,23 @@ def add_address(request):
         if number.strip() == '':
             messages.error(request, 'Number feilds is empty')
             return redirect('userprofile')
+        if not re.search(re.compile(r'(\+91)?(-)?\s*?(91)?\s*?(\d{3})-?\s*?(\d{3})-?\s*?(\d{4})'),number):
+            messages.error(request,'Enter valid phone number')
+            return redirect('userprofile')
+        phonenumber_checkings = len(number)
+        if not phonenumber_checkings == 10:
+            messages.error(request, 'Phone Number should be 10 digits')
+            return redirect('userprofile')
+        
         if email.strip() == '':
             messages.error(request, 'Email feild is empty')
             return redirect('userprofile')
+        
+        email_check = validator_email(email)
+        if email_check is False:
+            messages.error(request, 'Email is not valid')
+            return redirect('userprofile')
+        
         if address_user.strip() == '':
             messages.error(request , 'Address feilds is empty')
             return redirect('userprofile')
@@ -82,7 +99,10 @@ def add_address(request):
         if pincode.strip() == '':
             messages.error(request , 'Pincode is empty')
             return redirect('userprofile')
-
+        if not re.search(re.compile(r'^\d{6}$'),pincode):
+            messages.error(request,'Should only 6 contain numeric')
+            return redirect('userprofile')
+        
         #creatings address
         address_item = Address.objects.create(
             user = request.user,
@@ -97,7 +117,6 @@ def add_address(request):
             pincode = pincode,
             order_note = order_note,
         )
-        print(address_item,'sueeeeeeeeeeeeeee')
         address_item.save()
         messages.success(request, 'Succesffully added')
         return redirect('userprofile')
@@ -129,12 +148,27 @@ def edit_address(request,editaddress_id):
         if lastname.strip() == '':  
             messages.error(request ,'Last name is empty')
             return redirect('userprofile')
+        
         if number.strip() == '':
             messages.error(request, 'Number feilds is empty')
             return redirect('userprofile')
+        if not re.search(re.compile(r'(\+91)?(-)?\s*?(91)?\s*?(\d{3})-?\s*?(\d{3})-?\s*?(\d{4})'),number):
+            messages.error(request,'Enter valid phone number')
+            return redirect('userprofile')
+        phonenumber_checkings = len(number)
+        if not phonenumber_checkings == 10:
+            messages.error(request, 'Phone Number should be 10 digits')
+            return redirect('userprofile')
+        
         if email.strip() == '':
             messages.error(request, 'Email feild is empty')
             return redirect('userprofile')
+                
+        email_check = validator_email(email)
+        if email_check is False:
+            messages.error(request, 'Email is not valid')
+            return redirect('userprofile')
+        
         if address.strip() == '':
             messages.error(request , 'Address feilds is empty')
             return redirect('userprofile')
@@ -150,6 +184,11 @@ def edit_address(request,editaddress_id):
         if pincode.strip() == '':
             messages.error(request , 'Pincode is empty')
             return redirect('userprofile')
+        
+        if not re.search(re.compile(r'^\d{6}$'),pincode):
+            messages.error(request,'Should only 6 contain numeric')
+            return redirect('userprofile')
+        
 
 
         #Editings the address
@@ -273,6 +312,15 @@ def wallet(request):
 
 
 
+
+def validator_email(email):
+    try:
+        validate_email(email)
+        return True
+    except ValidationError:
+        return False
+    
+    
 
 def chat_box(request):
     return render(request, 'user/chat.html')
