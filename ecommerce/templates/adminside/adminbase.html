@@ -210,7 +210,16 @@
                 <span class="hide-menu">Sales Report</span>
               </a>
             </li>
-      
+            
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{% url 'adminside:admin_logout' %}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-user-plus"></i>
+                </span>
+                <span class="hide-menu">Logout</span>
+              </a>
+            </li>
+
           </ul>
         </nav>
         <!-- End Sidebar navigation -->
@@ -296,7 +305,7 @@
   <script src="{% static 'adminside/assets/libs/simplebar/dist/simplebar.js' %}"></script>
   <script src="{% static 'adminside/assets/js/dashboard.js' %}"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script>
-
+  
   
     {% for message in messages %}
         <script>

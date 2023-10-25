@@ -103,6 +103,7 @@ def edit_product(request,editproduct_id):
         brand_id = request.POST.get('product_brand')
         quantity = request.POST.get('product_quantity')
         offer = request.POST.get('offer')
+        print('the offer is the ',offer)
         product_categories = request.POST.get('product_category')
 
         #validatings the fields is empty

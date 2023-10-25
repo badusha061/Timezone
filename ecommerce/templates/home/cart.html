@@ -128,7 +128,7 @@
                                 </td>
                                 <td>
                                     <div class="product_count">
-                                        <button class="btn btn-primary btn-sm changeQuantity" data-action="decrement" data-product-id="{{i.product.id}}">
+                                        <button class="btn btn-primary btn-sm changeQuantity" data-action="decrement"  data-product-id="{{i.product.id}}">
                                             <i class="fas fa-minus"></i>
                                         </button>
                                         <input class="input-number"  type="number" value="{{i.quantity}}"  readonly  id="product_qty{{i.product.id}}">
@@ -245,7 +245,7 @@
         <div class="checkout_btn_inner float-right">
             <a class="btn_1" href="{% url 'home:shop' %}">Continue Shopping</a>
         </div>
-        
+
         {% endif %}
         <!--================End Cart Area =================-->
 </main>
@@ -408,6 +408,7 @@
                             footer: '<a href="">Why do I have this issue?</a>'
                           })
                     } else if (response.status == 'zero qty not allowed'){
+                        
                         Swal.fire({
                             icon: 'error',
                             title: 'Oops...',

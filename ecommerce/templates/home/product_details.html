@@ -94,7 +94,12 @@
                 
                 
                         <div class="add_to_cart">
-                            <a href="{% url 'add_cart'  %}" class="btn_3">Add to Cart</a>
+                            <form method="POST" action="{% url 'add_cart' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <input type="hidden" name="product_count" value="1">
+                                <button type="submit" style="background-color: red; width: 150px; height: 50px;">Add to Cart</button>
+                            </form>
                         </div>
                     </div>
                 </div>                

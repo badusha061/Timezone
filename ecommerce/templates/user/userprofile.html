@@ -622,73 +622,8 @@ button {
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.20/dist/sweetalert2.all.min.js"></script>
 
   
-  {% for message in messages %}
-      <script>
-          document.addEventListener('DOMContentLoaded', function() {
-              Swal.fire({
-                  text: "{{ message }}",
-                  timer: 5000, // Adjust the timer to control how long each alert stays visible (in milliseconds)
-              });
-          });
-      </script>
-    {% endfor %}
-{% comment %} 
-      const myTextField = document.getElementById("id_fullname");
-      myTextField.addEventListener("keypress", function(event) {
-        const key = event.key;
-        const isLetterOrSpace = /[a-zA-Z\s]/.test(key);
-        if (!isLetterOrSpace) {
-          event.preventDefault();
-        }
-      });
-
-      myTextField.addEventListener("paste", function(event) {
-        const pastedText = event.clipboardData.getData('text/plain');
-        const hasNumber = /\d/.test(pastedText);
-        if (hasNumber) {
-          event.preventDefault();
-        }
-      });
 
 
-
-    setTimeout(function(){
-            $('#message').fadeOut('slow')
-        }, 2000)
-
-        function submitForm(event) {
-    event.preventDefault(); // prevent form from submitting
-
-    var inputs = document.forms["myForm"].getElementsByTagName("input");
-    for (var i = 0; i < inputs.length; i++) {
-      if (inputs[i].value == "") {
-        alert("Please fill in all fields");
-        return false;
-      }
-    }
-    success: function(json){
-
-      if (json.status == 'true'){
-        window.location.reload()
-        return;
-      }
-
-      var messdiv = document.getElementById('message')
-      messdiv.style.display = "block";
-      messdiv.textContent = json.message
-
-    },
-
-    error: function(xhr, errmsg, err){
-
-
-    }
-
-    });
-
-    // All fields have values, submit the form
-  }
-  </script> {% endcomment %}
   
 <script>
   function copyReferralCode() {

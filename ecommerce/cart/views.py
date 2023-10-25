@@ -63,6 +63,8 @@ def cart(request):
 
 
 def add_cart(request ):
+    print('function is callings')
+    print(request.method)
     if request.method == 'POST': 
         if request.user.is_authenticated:
             prod_id = request.POST.get('product_id')
@@ -121,7 +123,8 @@ def update_cart(request):
             product_qty = request.POST.get('quantity')
             if product_qty == '0':
                 status = ('zero qty not allowed')
-                return JsonResponse({"status":status})
+
+                return JsonResponse({"status":status , "product_qty":product_qty})
             product_qty = int(product_qty)
             product_id = request.POST.get('product_id')
 

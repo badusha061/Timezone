@@ -13,6 +13,7 @@ from order.models import Order , OrderCancel , OrderItem , OrderReturn
 import csv 
 from django.http import HttpResponse
 from fpdf import FPDF
+
 from django.db.models import Prefetch
 # Create your views here.
 
@@ -202,9 +203,34 @@ def sales_report(request):
                 messages.error(request,'End date cannot be in the future')
                 return redirect('adminside:dashboard')
             orders = Order.objects.filter(created_at__date__range=(start_date,end_date))
-            recend = orders.order_by('created_at')
-        else:   
-            recend = Order.objects.order_by('created_at')[:10]
+            print('the order is the ',orders)
+            recend_order = orders.order_by('created_at')
+            total_sale = sum(order.total_price for order in orders)
+            total_count = orders.count()
+
+            sales_by_status = {
+                'Pending':orders.filter(od_status = 'Pending').count(),
+                'Processing':orders.filter(od_status = 'Processing').count(),
+                'Shipped':orders.filter(od_status = 'Shipped').count(),
+                'Delivered':orders.filter(od_status = 'Delivered').count(),
+                'Cancelled':orders.filter(od_status = 'Cancelled').count(),
+                'Return':orders.filter(od_status = 'Return').count()
+                }
+
+            sales_report = {
+                'start_date': start_date.strftime('%Y-%m-%d') if start_date else '',
+                'end_date': end_date.strftime('%Y-%m-%d') if end_date else '',
+                'total_sales': total_sale,
+                'total_orders': total_count,
+                'sales_by_status': sales_by_status,
+                'recent_orders': recend_order,
+            }
+            context = {
+                    'sales_report':sales_report,
+            }
+            print('the total sale is the ',total_sale)
+            return render(request,'adminside/salesreport.html',context)
+
     recend = Order.objects.order_by('created_at')[:10]
     orders = Order.objects.all()
     total_sale = sum(order.total_price for order in orders)
@@ -235,7 +261,9 @@ def sales_report(request):
 
 
 @login_required(login_url = 'adminside:admin_login')
-def export_csv(request):
+def export_csv(request,start_date = None , end_date = None):
+    print(start_date)
+    print(end_date)
     response = HttpResponse(content_type = 'text/csv')
     response['Content-Disposition'] = 'attachment; filename=Expenses' + \
         str(datetime.now()) + '.csv'
@@ -243,8 +271,13 @@ def export_csv(request):
     writer = csv.writer(response)
     # heading for csv 
     writer.writerow(['user','total_price','payment_mode','tracking number', 'Order at','product_name','product_price','product_quantity'])
+    if start_date and end_date:
+        start_date_obj = datetime.strptime(start_date,'%Y-%m-%d').date()
+        end_date_obj = datetime.strptime(end_date, '%Y-%m-%d').date()
+        orders = Order.objects.filter(created_at__date__range=(start_date_obj, end_date_obj))
+    else:
+        orders = Order.objects.all()
 
-    orders = Order.objects.all()
     for order in orders:
         order_item = OrderItem.objects.filter(order = order).select_related('product')
         grouped_order_items = groupby(order_item, key=lambda x: x.order_id)
@@ -264,7 +297,8 @@ def export_csv(request):
     return response
 
 @login_required(login_url = 'adminside:admin_login')
-def pdf(request):
+def pdf(request,start_date = None , end_date = None):
+
     response =HttpResponse(content_type = 'application/pdf')
     response['Content-Disposition'] = 'attachment; filename=Expenses' + \
         str(datetime.now()) + '.pdf'
@@ -284,9 +318,16 @@ def pdf(request):
     pdf.cell(0, 10, str(datetime.now()), 0, 1, 'C')
     
     data = [['user','Toatl price','Payement Mode','Tracking Number','Odered_at', 'Product Name','Product Price','Prduct Quantity']]
-    orders = Order.objects.all().prefetch_related(
-        Prefetch('orderitem_set', queryset = OrderItem.objects.select_related('product'))
-    )
+    if start_date and end_date:
+            start_date_obj = datetime.strptime(start_date,'%Y-%m-%d').date()
+            end_date_obj = datetime.strptime(end_date, '%Y-%m-%d').date()
+            orders = Order.objects.filter(created_at__date__range=(start_date_obj, end_date_obj)).prefetch_related(
+            Prefetch('orderitem_set', queryset=OrderItem.objects.select_related('product'))
+            )
+    else:
+        orders = Order.objects.all().prefetch_related(
+            Prefetch('orderitem_set', queryset = OrderItem.objects.select_related('product'))
+        )
     for order in orders:
         order_item = order.orderitem_set.all()
         for index , order_item in enumerate(order_item):

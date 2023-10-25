@@ -244,6 +244,7 @@
                                                     <div class="form-outline mb-4">
                                                         <label class="form-label" for="form3Example3cg">Product Offer</label>
                                                         <select class="form-select" name="offer">
+                                                            <option value="">No offer</option>
                                                             {% for i in offer %}
                                                                 {% if i.brand == user.Brand.brand %}
                                                                     <option value="{{ i.id }}" selected>{{ i.offer_name }}</option>
@@ -370,6 +371,7 @@
                     <div class="form-outline mb-4">
                         <label class="form-label" for="form3Example3cg">Offer</label>
                         <select class="form-select" name="offer">
+                            <option value="">No offer</option>
                             {% for c in offer %}
                             <option value="{{c.id}}">{{c.offer_name}}</option>
                             {% endfor %}

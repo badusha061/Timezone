@@ -43,13 +43,14 @@
                                 </div>
                                 <h2 style="margin-top: 5%;">{% if sales_report.start_date and sales_report.end_date %}All Orders{% else %}Recent Orders{% endif %}</h2>
                                 {% if sales_report.start_date and sales_report.end_date %}
-                                <a href="{% url 'adminside:export_csv' %}" class="btn btn-success">
+                                <a href="{% url 'adminside:export_csv' sales_report.start_date sales_report.end_date %}" class="btn btn-success">Export as CSV</a>
                                     Download CSV <i class="mdi mdi-file-excel" style="font-size: x-large;"></i>
                                   </a>
-                                <a href="{% url 'adminside:pdf' %}" class="btn btn-danger" >
+                                <a href="{% url 'adminside:pdf' sales_report.start_date sales_report.end_date %}" class="btn btn-danger" >
                                     Download PDF <i class="mdi mdi-file-pdf" style="font-size: x-large;"></i>
                                   </a>
                                   {% endif %}
+
                                 <div class="table-responsive">
                                     <table id="example" class="display nowrap mt-5 table" style="width:100%">
                                         <thead>
