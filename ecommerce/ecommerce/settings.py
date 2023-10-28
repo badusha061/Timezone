@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-f3&t4h_)*^c$8#xrc593@iu=3mhbdv8r72t_4)k#@bug)79yta
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -55,7 +55,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ROOT_URLCONF = 'ecommerce.urls'
 
@@ -86,10 +89,10 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'timezone1',
-        'USER': 'postgres',
-        'PASSWORD': '123',
-        'HOST': 'localhost',  
+        'NAME': 'fashion_db',
+        'USER': 'fashion_user',
+        'PASSWORD': 'fashion_user123',
+        'HOST': 'postgres_db',  
         'PORT': '5432',           
     }
 }

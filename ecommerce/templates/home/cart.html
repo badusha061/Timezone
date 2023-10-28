@@ -99,6 +99,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Product</th>
+                                <th scope="col">Status</th>
                                 <th scope="col">Price</th>
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Total Price </th>
@@ -112,12 +113,21 @@
                                 <td>
                                     <div class="media">
                                         <div class="d-flex">
-                                            <img src="{{i.product.product_image.url}}" alt="image" />
+                                       
+                                            <img src="{{i.product.product_image.url}}" alt="image" width="60px" />
                                         </div>
                                         <div class="media-body">
                                             <p>{{i.product.product_name}}</p>
                                         </div>
                                     </div>
+                                </td>
+                              
+                                <td>
+                                    {% if i.product.product_quantity <= 0 %}
+                                    <div class="label new text-danger font-weight-bold">Out of stock</div>
+                                    {% else %}
+                                    <div class="label new text-danger font-weight-bold">In stock</div>
+                                    {% endif  %}
                                 </td>
                                 <td>
                                     {% if i.product.offer or i.product.product_brand.offer %}
@@ -176,26 +186,7 @@
                                                     </a>
                                                     </li>
                                             </div>
-<!-- 
-                                            <div class="col-lg-6 d-flex align-items-center">
-                                                <div class="column">
-                                                    <hr class="divider">
-                                                    <h3 class="product-price"> Total Price: <span id="dispricecounted"> {{total_price}} </span> </h3>
-                                                    
-                                                    <hr class="divider">
-                                                    <h3 class="product-brand"> Product Discount: 
-                                                        <span id="discount">{% if discount %}{{discount}}{% else %}No Discount{% endif %}</span>
-                                                    </h3>
-                                                
-                                                    <hr class="divider">
-                                                    <h3 class="product-category"> After Discount : <span id="grand_total">
-                                                        {% if after_discount != None %}
-                                                        {{after_discount}}
-                                                        {% else %}
-                                                        <h5>No Coupon Apply</h5>
-                                                        {% endif %}
-                                                    </span></h3>
-                                                </div>            -->
+
 
                                                                                
                     <div class="col-xl-4 col-lg-4 col-md-12">
@@ -209,11 +200,7 @@
                               <tr class="first-child lastchild">
                                   <td>Product Discount:</td>
                                   <td id="discount">{{discount}}</td>
-                                  <!-- {% if discount %}
-                                  <td id="discount"> {{discount}} </td>
-                                  {% else %}
-                                  <td> No Discount </td>
-                                  {% endif %} -->
+                    
                               </tr>
                               <tr class="first-child">
                                   <td>After Discount:</td>
@@ -224,9 +211,13 @@
                                 {% endif %}
                               </tr>
                               <tr>  
+                                {% if all_cart_item %}
                                   <td colspan="2">
                                     <a class="btn_1 checkout_btn_1" href="{% url 'checkout' %}">Proceed to checkout</a> 
                                   </td>
+                                {% else  %}
+                                <p>Since all items are not in stock , Delete the item out of stock for proceed witih checkout</p>
+                                {% endif  %}
                               </tr>
                           </table>
                         </div>
@@ -242,6 +233,7 @@
         <div class="empty-cart-notification">
             You do not have any items in your cart.
         </div>
+
         <div class="checkout_btn_inner float-right">
             <a class="btn_1" href="{% url 'home:shop' %}">Continue Shopping</a>
         </div>

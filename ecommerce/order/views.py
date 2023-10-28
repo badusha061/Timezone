@@ -7,71 +7,89 @@ from .models import OrderCancel , OrderReturn
 # Create your views here.
 
 def admin_order(request):
-    order_item = Order.objects.all()
-   
-    context = {
-        
-        'order_item':order_item
-    }
-    return render(request,'adminside/order.html',context)
+    try:
+        order_item = Order.objects.all()
+    
+        context = {
+            
+            'order_item':order_item
+        }
+        return render(request,'adminside/order.html',context)
+    except Exception as e:
+        print(e)
+        return render(request, 'adminside/order.html')
 
 
 def user_order(request):
-   
-    order_details = OrderItem.objects.filter(user = request.user)
-    order_item = Order.objects.filter(user = request.user)
-    for i in order_item:
-        print(i.od_status)
+    try:
+        order_details = OrderItem.objects.filter(user = request.user)
+        order_item = Order.objects.filter(user = request.user)
+        for i in order_item:
+            print(i.od_status)
 
- 
-    context = {
-        
-        'order_datails':order_details,
-        'order_item':order_item,
-    }
-    return render(request,'user/userorder.html',context)
-
+    
+        context = {
+            
+            'order_datails':order_details,
+            'order_item':order_item,
+        }
+        return render(request,'user/userorder.html',context)
+    except Exception as e:
+        print(e)
+        return render(request, 'user/userorder.html')
 
 def order_views(request,orderviews_id):
-    order = Order.objects.filter(id = orderviews_id)
-    order_item = OrderItem.objects.filter(order_id = orderviews_id)
-    print(order_item)
-    context = {
-        'order_views':order_item,
-        'order':order,
-    }
-    
-    return render(request , 'order/orderview.html',context)
+    try:
+        order = Order.objects.filter(id = orderviews_id)
+        order_item = OrderItem.objects.filter(order_id = orderviews_id)
+        print(order_item)
+        context = {
+            'order_views':order_item,
+            'order':order,
+        }
+        
+        return render(request , 'order/orderview.html',context)
+    except Exception as e:
+        print(e)
+        return render(request, 'order/orderview.html')
 
 
 def order_views_admin(request,orderviews_id):
-    order_views = OrderItem.objects.filter(order_id = orderviews_id)
-    order = Order.objects.filter(id = orderviews_id)
+    try:
+        order_views = OrderItem.objects.filter(order_id = orderviews_id)
+        order = Order.objects.filter(id = orderviews_id)
 
 
-    context = {
-        'order_views':order_views,
-        'order':order,
-    }
-    
-    return render(request, 'adminside/orderview.html', context)
+        context = {
+            'order_views':order_views,
+            'order':order,
+        }
+        
+        return render(request, 'adminside/orderview.html', context)
+    except Exception as e:
+        print(e)
+        return render(request, 'adminside/orderview.html')
 
 
 def change_status(request):
-    if request.method == 'POST':
-        print('the function is calling',request.method)
-        orderitem = request.POST.get('orderitem_id')
-        status = request.POST.get('status')
-        order_item = OrderItem.objects.get(id = orderitem )
-        view_id = order_item.order.id
-        order = Order.objects.get(id = view_id)
-        order_item.status = status
-        order.od_status = status
-        order_item.save()
-        order.save()
-        messages.success(request, 'Successfully updated ')
-        return redirect('admin_order')
-    return render(request, 'adminside/orderview.html')
+    try:
+        if request.method == 'POST':
+            print('the function is calling',request.method)
+            orderitem = request.POST.get('orderitem_id')
+            status = request.POST.get('status')
+            order_item = OrderItem.objects.get(id = orderitem )
+            view_id = order_item.order.id
+            order = Order.objects.get(id = view_id)
+            order_item.status = status
+            order.od_status = status
+            order_item.save()
+            order.save()
+            messages.success(request, 'Successfully updated ')
+            return redirect('admin_order')
+        return render(request, 'adminside/orderview.html')
+    except Exception as e:
+        print(e)
+        return render(request, 'adminside/orderview.html')
 
 
 def cancel_order(request,ordercancel_id):
@@ -194,9 +212,13 @@ def return_order(request,orderreturn_id):
 
 
 def order_tracker(request , ordertracker_id):
-    track = Order.objects.get(id = ordertracker_id)
-    context = {
-        'track':track
-    }
-    print(track.od_status)
-    return render(request,'order/ordertracker.html',context)
+    try:
+        track = Order.objects.get(id = ordertracker_id)
+        context = {
+            'track':track
+        }
+        print(track.od_status)
+        return render(request,'order/ordertracker.html',context)
+    except Exception as e:
+        print(e)
+        return render(request, 'order/ordertracker.html')

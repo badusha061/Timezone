@@ -47,7 +47,7 @@ $(document).ready(function() {
                 data: postData,
                 success: function(responsec) {
                     
-                    var userOrderUrl = "{% url 'user_order' %}";
+                    var userOrderUrl = "{% url 'userauth:home' %}";
                     window.location.href = userOrderUrl;
 
                     Swal.fire("Congratulations!", responsec.status, "success")

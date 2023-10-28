@@ -24,36 +24,36 @@
         </div>
         <!-- Hero Area End-->
         <!--================login_part Area =================-->
-        <section class="login_part section_padding ">
+
+  
+
+        <section class="login_part section_padding">
             <div class="container">
                 <div class="row align-items-center">
+                    <!-- Left Side: New to our Shop? -->
                     <div class="col-lg-6 col-md-6">
-                        <div class="login_part_text_iner">
-                            <h2>New to our Shop?</h2>
-                            <p>There are advances being made in science and technology everyday, and a good <br> example of this is the</p>
-                            
-                            <!-- Image wrapped inside a link -->
-                            <a href="{% url 'userauth:register' %}">
-                                <img src="/static/user/assets/img/gallery/choce_watch2.png" alt="Descriptive alt text">
-                            </a>
-                        
-                            <a href="{% url 'userauth:register' %}" class="btn_3">Create an Account</a>
+                        <div class="login_part_text text-center">
+                            <div class="login_part_text_iner">
+                                <h2>New to our Shop?</h2>
+                                <p>There are advances being made in science and technology everyday, and a good example of this is the</p>
+                                <a href="{% url 'userauth:register' %}" class="btn_3">Create an Account</a>
+                            </div>
                         </div>
-                        
                     </div>
+                    <!-- Right Side: Login Form -->
                     <div class="col-lg-6 col-md-6">
                         <div class="login_part_form">
                             <div class="login_part_form_iner">
                                 <h3>Welcome Back ! <br>
                                     Please Sign in now</h3>
                                 <form class="row contact_form" action="{% url 'userauth:user_login' %}" method="post" novalidate="novalidate">
-                                            {% csrf_token %}                                    
+                                    {% csrf_token %}
                                     <div class="col-md-12 form-group p_star">
-                                        <input type="text" class="form-control" id="username" name="username" value=""  placeholder="Username" pattern="[a-zA-Z0-9]{5,15}" title="Username must be alphanumeric and between 5-15 characters">
+                                        <input type="text" class="form-control" id="username" name="username" value="" placeholder="Username" pattern="[a-zA-Z0-9]{5,15}" title="Username must be alphanumeric and between 5-15 characters">
                                         <span id="usernameFeedback"></span>
                                     </div>
                                     <div class="col-md-12 form-group p_star">
-                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"  title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"  >
+                                        <input type="password" class="form-control" id="password" name="password" value="" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters">
                                         <span id="passwordFeedback"></span>
                                     </div>
                                     <div class="col-md-12 form-group">
@@ -61,36 +61,36 @@
                                             <input type="checkbox" id="f-option" name="selector">
                                             <label for="f-option">Remember me</label>
                                         </div>
-
-                                        
-                      <div class="message-container">
-                        {% for message in messages %}
-                          <div class="message" style="background-color: #ffcccc; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="float: right;">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                            <i class="{{ message.level_icon }}" style="margin-right: 5px;"></i>
-                            <p style="margin: 0;">{{ message }}</p>
-                          </div>
-                        {% endfor %}
-                      </div>
-
-
-
-
-
-                                        <button type="submit" value="submit" class="btn_3">
-                                            log in
-                                        </button>
-                                        <a class="lost_pass" href=" {% url 'userauth:forget_password' %} ">forget password?</a>
+                                        <button type="submit" value="submit" class="btn_3">log in</button>
+                                        <a class="lost_pass" href="{% url 'userauth:forget_password' %}">forget password?</a>
                                     </div>
+                                    
+                                    {% if messages %}
+                                    <div class="message-container">
+                                        {% for message in messages %}
+                                          <div class="message" style="background-color: #ffcccc; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="float: right;">
+                                              <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            <i class="{{ message.level_icon }}" style="margin-right: 5px;"></i>
+                                            <p style="margin: 0;">{{ message }}</p>
+                                          </div>
+                                        {% endfor %}
+                                      </div>
+                                      {% endif  %}
+
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+
         </section>
+        
+
+
         <!--================login_part end =================-->
     </main>
 

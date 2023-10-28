@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  postgres_db:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: 'fashion_db'
+      POSTGRES_USER: 'fashion_user'
+      POSTGRES_PASSWORD: 'fashion_user123'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    volumes:
+      - .:/app
+    container_name: ecommerce_container
+    ports:
+      - 8090:8000
+    image: app:ecommerce
+    command: gunicorn --bind 0.0.0.0:8000 ecommerce.wsgi:application
+    depends_on:
+      - postgres_db
+
+volumes:
+  postgres_data:

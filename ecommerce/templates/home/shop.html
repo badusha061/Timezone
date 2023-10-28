@@ -69,92 +69,79 @@
 </style>
 
 
+
+
 <main>
-   
-    
- <!-- Product Search -->
- <div class="container-fluid mt-3">
-    <form action="{% url 'home:search' %}" method="GET" class="search-box mb-4">
-        <input type="text" name="q" placeholder="Search..." class="mr-2">
-        <button type="submit">
-            <i class="fas fa-search"></i>
-        </button>
-    </form>
-</div>
+    <div class="container-fluid mt-3 mb-4">
+        <!-- Product Search -->
+        <form action="{% url 'home:search' %}" method="GET" class="search-box mb-4 d-flex justify-content-center">
+            <input type="text" name="q" placeholder="Search..." class="mr-2 form-control">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
 
-
-
-
-
-
-
-
-<div class="container-fluid">
-<!-- Category Filters (On the left) -->
-<div class="row">
-    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-        <div class="card">
-            <h3 class="mb-30">Filter</h3>
-
-            <!-- Begin Filter Form -->
-            <form action=" {% url 'home:filter_category' %} " method="post">
-                {% csrf_token %}
-                
-                <!-- Filter by Category -->
-                <div class="categories-dropdown-wrap font-heading">
-                    <h6>By Category</h6>
-                    <ul>
-                        {% for i in categories %}
-                        <li>
-                            <input data-filter="Category" class="form-check-input filter-checkbox" type="checkbox" name="category[]" value="{{i.id}}" />
-                            &nbsp;  &nbsp; 
-                            <label for="category_{{i.id}}">
-                                <img src="{{i.image.url}}" alt="" class="small-image"/> {{i.name}}
-                            </label>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-
-                <!-- Filter by Brand -->
-                <div class="brands-dropdown-wrap font-heading">
-                    <h6>By Brand</h6>
-                    <ul>
-                        {% for brand in brands %}
-                        <li>
-                            <input data-filter="Brand" class="form-check-input filter-checkbox" type="checkbox" name="brand[]" value="{{brand.id}}" />
-                            &nbsp;  &nbsp; 
-                            <label for="brand_{{brand.id}}">
-                                <img src="{{brand.brand_image.url}}" alt="" class="small-image"/> 
-                                {{brand.brand_name}}
-                            </label>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-
-                <!-- Submit Button for Filtering -->
-                <div class="filter-submit-wrap">
-                    <button type="submit" class="btn btn-primary">Apply Filters</button>
-                </div>
-
-            </form> <!-- End Filter Form -->
-
-        </div>
-    </div>
-
-    
-
-<!-- Products Display (On the right) -->
-    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12">
+        <!-- Main content area -->
         <div class="row">
-        <!-- <div class="row" > -->
-            {% for i in product %}
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12" id="filtered_product">
+            <!-- Category Filters (On the left) -->
+            <div class="col-lg-3">
+                <!-- Filter card -->
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="mb-3">Filter</h3>
+                        <form action="{% url 'home:filter_category' %}" method="post">
+                            {% csrf_token %}
+                            <!-- Categories -->
+                            <div class="mb-4">
+                                <h6>By Category</h6>
+                                <ul class="list-unstyled">
+                                    {% for i in categories %}
+                                        <li>
+                                            <input data-filter="Category" class="form-check-input filter-checkbox" type="checkbox" name="category[]" value="{{i.id}}" />
+                                            &nbsp;  &nbsp; 
+                                            <label for="category_{{i.id}}">
+                                                <img src="{{i.image.url}}" alt="" class="small-image"/> {{i.name}}
+                                            </label>
+                                        </li>
+                                        {% endfor %}
+                                </ul>
+                            </div>
+                            <!-- Brands -->
+                            <div class="mb-4">
+                                <h6>By Brand</h6>
+                                <ul class="list-unstyled">
+                                    {% for brand in brands %}
+                                    <li>
+                                        <input data-filter="Brand" class="form-check-input filter-checkbox" type="checkbox" name="brand[]" value="{{brand.id}}" />
+                                        &nbsp;  &nbsp; 
+                                        <label for="brand_{{brand.id}}">
+                                            <img src="{{brand.brand_image.url}}" alt="" class="small-image"/> 
+                                            {{brand.brand_name}}
+                                        </label>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <!-- Submit Button -->
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Display (On the right) -->
+            <div class="col-lg-9">
+                <div class="row">
+                    {% for i in product %}
+            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12" id="filtered_product">
                 <div class="single-popular-items mb-50 text-center">
                  
                     {% if i.offer %}
                     <div class="offer-label">Offer! <span>{{i.offer.discount_amount}}%</span> off</div>
+                    {% elif i.product_brand.offer %}
+                    <div class="offer-label">Offer! <span>{{i.product_brand.offer.discount_amount}}%</span> off</div>
                 {% endif %} 
 
                     <div class="popular-img">
@@ -163,7 +150,7 @@
                         {% with product_image=i.productimage_set.first %}
                       
                         {% if product_image %}  
-                        <img src="{{ product_image.image.url }}" alt="">
+                        <img src="{{ product_image.image.url }}" alt="" width="180px">
                         {% endif %}
                         {% endwith %}
 
@@ -177,11 +164,7 @@
                                 <button type="submit" style="background-color: red; width: 150px; height: 50px;">Add to Cart</button>
                             </form>
                         </div>
-                        <!-- <div class="favorit-items">
-                            <a href="#" class="btn-product-icon btn-wishlist btn-expandable wish-list" data-product_id="{{ i.id }}">
-                                <span class="flaticon-heart" id="heart-{{ i.id }}"></span>
-                            </a>
-                        </div> -->
+         
                     </div>
                     <div class="popular-caption">
                         <h3><a href="{% url 'product_view' i.id %}">{{ i.product_name }}</a></h3>
@@ -194,25 +177,16 @@
                     </div>
                 </div>
             </div>
-            {% if forloop.counter|divisibleby:4 and not forloop.last %}
-        <!-- </div> -->
+            {% if forloop.counter|divisibleby:3 and not forloop.last %}
+         </div> 
         <div class="row">
             {% endif %} 
             {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
-    </div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-
-    <!-- End Nav Card -->
-</section>
 </main>
-
 
 
 
@@ -262,38 +236,6 @@
         });
     </script>
     
-
-<!-- <script>
-    $(document).ready(function() {
-        $(".filter-checkbox").on("click", function(){            
-            let filter_object = {};
-            let filter_key = "Category";  
-            
-           
-            let checkedValues = $('.filter-checkbox:checked').map(function() {
-                return this.value;
-            }).get();
-            console.log(filter_object)
-            filter_object[filter_key] = checkedValues;
-            $.ajax({
-                url : "{% url 'home:filter_category' %}",
-                data : filter_object,
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                dataType : "json",
-                beforeSend : function(){
-                    console.log("sending  data ..........");
-                },
-                success: function(response){
-                    console.log(response)
-                $("#filtered_product").html(response.data)
-
-                }
-            })  
-    
-        });
-    });
-    
-</script> -->
 
 
 {% endblock content %}
