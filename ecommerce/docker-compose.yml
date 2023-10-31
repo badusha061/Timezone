@@ -21,6 +21,12 @@ services:
     command: gunicorn --bind 0.0.0.0:8000 ecommerce.wsgi:application
     depends_on:
       - postgres_db
-
+  
 volumes:
   postgres_data:
+ 
+
+
+
+
+
