@@ -21,9 +21,10 @@ from django.shortcuts import render
 def index(request):
     try:
         banner = Banner.objects.all() 
-
+        products = Product.objects.all()[:3:-1]
         context = {
-            'banner':banner
+            'banner':banner,
+            "products":products
         }
         return render(request, 'home/index.html',context)
     except Exception as e:

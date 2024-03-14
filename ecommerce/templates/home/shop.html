@@ -1,4 +1,4 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
 {% load static %}
 {% block content %}
 
@@ -48,43 +48,122 @@
 
 <style>
     .offer-label {
-        display: inline-block; /* To fit the content width */
+        display: inline-block;
+        /* To fit the content width */
         background-color: red;
         color: white;
         padding: 5px 10px;
         font-weight: bold;
-        border-radius: 20px; /* Rounded edges for badge-like appearance */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+        border-radius: 20px;
+        /* Rounded edges for badge-like appearance */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* Optional shadow for depth */
         z-index: 1;
-        position: relative; /* You can use absolute positioning within a parent if you want to place it at a specific location on your product. */
+        position: relative;
+        /* You can use absolute positioning within a parent if you want to place it at a specific location on your product. */
     }
-    
+
     .offer-label span {
-        margin-left: 5px; /* Some spacing */
-        font-size: 1.2em; /* Make the percentage slightly larger */
-        vertical-align: middle; /* Align with the text */
+        margin-left: 5px;
+        /* Some spacing */
+        font-size: 1.2em;
+        /* Make the percentage slightly larger */
+        vertical-align: middle;
+        /* Align with the text */
     }
-    
-    
 </style>
 
+<style>
+    .product-card {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        margin-bottom: 24px;
+    }
 
+    .product-card a {
+        text-decoration: none;
+    }
 
+    .product-card .stock {
+        position: absolute;
+        color: #fff;
+        border-radius: 4px;
+        padding: 2px 12px;
+        margin: 8px;
+        font-size: 12px;
+    }
+
+    .product-card .product-card-img {
+        max-height: 260px;
+        overflow: hidden;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .product-card .product-card-img img {
+        width: 100%;
+    }
+
+    .product-card .product-card-body {
+        padding: 10px 10px;
+    }
+
+    .product-card .product-card-body .product-brand {
+        font-size: 14px;
+        font-weight: 400;
+        margin-bottom: 4px;
+        color: #937979;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .product-card .product-card-body .product-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: #000;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .product-card .product-card-body .selling-price {
+        font-size: 22px;
+        color: #000;
+        font-weight: 600;
+        margin-right: 8px;
+    }
+
+    .product-card .product-card-body .original-price {
+        font-size: 18px;
+        color: #937979;
+        font-weight: 400;
+        text-decoration: line-through;
+    }
+
+    .product-card .product-card-body .btn1 {
+        border: 1px solid;
+        margin-right: 3px;
+        border-radius: 0px;
+        font-size: 12px;
+        margin-top: 10px;
+    }
+</style>
 
 <main>
-    <div class="container-fluid mt-3 mb-4">
+    <div class=" container max-auto c">
         <!-- Product Search -->
-        <form action="{% url 'home:search' %}" method="GET" class="search-box mb-4 d-flex justify-content-center">
+        {% comment %} <form action="{% url 'home:search' %}" method="GET"
+            class="search-box mb-4 d-flex justify-content-center">
             <input type="text" name="q" placeholder="Search..." class="mr-2 form-control">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i>
             </button>
-        </form>
+        </form> {% endcomment %}
 
         <!-- Main content area -->
         <div class="row">
             <!-- Category Filters (On the left) -->
-            <div class="col-lg-3">
+            {% comment %} <div class="col-lg-3">
                 <!-- Filter card -->
                 <div class="card">
                     <div class="card-body">
@@ -96,14 +175,15 @@
                                 <h6>By Category</h6>
                                 <ul class="list-unstyled">
                                     {% for i in categories %}
-                                        <li>
-                                            <input data-filter="Category" class="form-check-input filter-checkbox" type="checkbox" name="category[]" value="{{i.id}}" />
-                                            &nbsp;  &nbsp; 
-                                            <label for="category_{{i.id}}">
-                                                <img src="{{i.image.url}}" alt="" class="small-image"/> {{i.name}}
-                                            </label>
-                                        </li>
-                                        {% endfor %}
+                                    <li>
+                                        <input data-filter="Category" class="form-check-input filter-checkbox"
+                                            type="checkbox" name="category[]" value="{{i.id}}" />
+                                        &nbsp; &nbsp;
+                                        <label for="category_{{i.id}}">
+                                            <img src="{{i.image.url}}" alt="" class="small-image" /> {{i.name}}
+                                        </label>
+                                    </li>
+                                    {% endfor %}
                                 </ul>
                             </div>
                             <!-- Brands -->
@@ -112,10 +192,11 @@
                                 <ul class="list-unstyled">
                                     {% for brand in brands %}
                                     <li>
-                                        <input data-filter="Brand" class="form-check-input filter-checkbox" type="checkbox" name="brand[]" value="{{brand.id}}" />
-                                        &nbsp;  &nbsp; 
+                                        <input data-filter="Brand" class="form-check-input filter-checkbox"
+                                            type="checkbox" name="brand[]" value="{{brand.id}}" />
+                                        &nbsp; &nbsp;
                                         <label for="brand_{{brand.id}}">
-                                            <img src="{{brand.brand_image.url}}" alt="" class="small-image"/> 
+                                            <img src="{{brand.brand_image.url}}" alt="" class="small-image" />
                                             {{brand.brand_name}}
                                         </label>
                                     </li>
@@ -129,61 +210,135 @@
                         </form>
                     </div>
                 </div>
-            </div>
+            </div> {% endcomment %}
 
             <!-- Products Display (On the right) -->
-            <div class="col-lg-9">
+            {% comment %} <div class="col-lg-9">
                 <div class="row">
                     {% for i in product %}
-            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12" id="filtered_product">
-                <div class="single-popular-items mb-50 text-center">
-                 
-                    {% if i.offer %}
-                    <div class="offer-label">Offer! <span>{{i.offer.discount_amount}}%</span> off</div>
-                    {% elif i.product_brand.offer %}
-                    <div class="offer-label">Offer! <span>{{i.product_brand.offer.discount_amount}}%</span> off</div>
-                {% endif %} 
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12" id="filtered_product">
+                        <div class="single-popular-items mb-50 text-center">
 
-                    <div class="popular-img">
-                
+                            {% if i.offer %}
+                            <div class="offer-label">Offer! <span>{{i.offer.discount_amount}}%</span> off</div>
+                            {% elif i.product_brand.offer %}
+                            <div class="offer-label">Offer! <span>{{i.product_brand.offer.discount_amount}}%</span> off
+                            </div>
+                            {% endif %}
 
-                        {% with product_image=i.productimage_set.first %}
-                      
-                        {% if product_image %}  
-                        <img src="{{ product_image.image.url }}" alt="" width="180px">
-                        {% endif %}
-                        {% endwith %}
+                            <div class="popular-img">
 
-                     
 
-                        <div class="img-cap">
-                            <form method="POST" action="{% url 'add_cart' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="product_id" value="{{ i.id }}">
-                                <input type="hidden" name="product_count" value="1">
-                                <button type="submit" style="background-color: red; width: 150px; height: 50px;">Add to Cart</button>
-                            </form>
+                                {% with product_image=i.productimage_set.first %}
+
+                                {% if product_image %}
+                                <img src="{{ product_image.image.url }}" alt="" width="180px">
+                                {% endif %}
+                                {% endwith %}
+
+
+
+                                <div class="img-cap">
+                                    <form method="POST" action="{% url 'add_cart' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="product_id" value="{{ i.id }}">
+                                        <input type="hidden" name="product_count" value="1">
+                                        <button type="submit"
+                                            style="background-color: red; width: 150px; height: 50px;">Add to
+                                            Cart</button>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <div class="popular-caption">
+                                <h3><a href="{% url 'product_view' i.id %}">{{ i.product_name }}</a></h3>
+                                {% if i.offer or i.product_brand.offer %}
+                                <span>₹{{ i.get_offer }}</span>
+                                <del>₹ {{ i.product_price }}</del>
+                                {% else %}
+                                <span class="line-through">₹{{ i.product_price }}</span>
+                                {% endif %}
+                            </div>
                         </div>
-         
                     </div>
-                    <div class="popular-caption">
-                        <h3><a href="{% url 'product_view' i.id %}">{{ i.product_name }}</a></h3>
-                        {% if i.offer or i.product_brand.offer %}
-                        <span>₹{{ i.get_offer }}</span>
-                        <del>₹ {{ i.product_price }}</del>
-                        {% else %}
-                        <span class="line-through">₹{{ i.product_price }}</span>
-                        {% endif %}
+                    {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                </div>
+                <div class="row">
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div> {% endcomment %}
+
+
+
+            <div class="py-3 py-md-5 bg-light">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 class="mb-4">Our Products</h4>
+                        </div>
+
+
+                        {% for pro in product %}
+                        <div class="col-md-3">
+                            <div class="product-card">
+                                <div class="product-card-img">
+                                    <label class="stock bg-success">In Stock</label>
+                                    {% with product_image=pro.productimage_set.first %}
+
+                                    {% if product_image %}
+                                    <img src={{product_image.image.url}} alt="Head Phone">
+                                    {% endif %}
+                                    {% endwith %}
+
+                                </div>
+                                <div class="product-card-body">
+                                    <p class="product-brand"> </p>
+                                    <h5 class="product-name">
+                                        <a href=""  style="color: black;">
+                                            {{pro.product_name}}
+                                        </a>
+                                    </h5>
+                                    <div>
+
+                                        {% if pro.offer or pro.product_brand.offer %}
+                                        <span class="selling-price">₹{{ pro.get_offer }}</span>
+                                        <span class="original-price">₹ {{ pro.product_price }}</span>
+                                        {% else %}
+                                        <span class="selling-price">₹{{ pro.product_price }}</span>
+                                        {% endif %}
+
+
+
+                                    </div>
+                                    <div class="mt-2"
+                                        style="display: flex;  align-items:center; justify-content: space-around; ">
+
+                                        <form method="POST" action="{% url 'add_cart' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="product_id" value="{{ pro.id }}">
+                                            <input type="hidden" name="product_count" value="1">
+                                            <button type="submit"
+                                                style='font-size:15px; background-color: black;'>CART <i
+                                                    class='fas fa-shopping-cart'></i></button>
+                                        </form>
+                                        <a href="{% url 'product_view' pro.id %}" >
+                                            <button style="font-size:15px; background-color: black ">VIEW <i class="fa fa-eye"></i></button>
+                                        </a>
+                                        
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
                     </div>
                 </div>
             </div>
-            {% if forloop.counter|divisibleby:3 and not forloop.last %}
-         </div> 
-        <div class="row">
-            {% endif %} 
-            {% endfor %}
-                </div>
-            </div>
+
+
+
         </div>
     </div>
 </main>
@@ -193,49 +348,50 @@
 
 
 
-    <!-- Shop Method End-->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
-    
-    <script>
-        $('.wish-list').click(function(e) {
-            e.preventDefault();
-    
-            var product_id = $(this).data('product_id');
-            var add_size = $('select[name="size"]').val();
-    
-            $.ajax({
-                method: "POST",
-                url: "{% url 'add_wishlist' %}",
-                data: {
-                    'product_id': product_id,
-                    'add_size': add_size,
-                    csrfmiddlewaretoken: '{{ csrf_token }}'
-                },
-                success: function(response) {
-                    console.log(response);
-    
-                    if (response.status === 'No such product found' || response.status === 'Only few quantity available' || response.status === 'Product already in Wishlist') {
-                        swal.fire("Error!", response.status, "error");
-                        $('.cartdata').load(location.href + " .cartdata");
-                    } else if (response.status === 'Product added successfully in Wishlist') {
-                        swal.fire("", response.status, "success");
-                        $('.cartdata').load(location.href + " .cartdata");
-                    } else if (response.status === 'you are not login please Login to continue') {
-                        swal.fire("", response.status, "warning");
-                        $('.cartdata').load(location.href + " .cartdata");
-                    } else if (response.status === 'Sorry! this variant not available') {
-                        swal.fire("", response.status, "warning");
-                        $('.cartdata').load(location.href + " .cartdata");
-                    } else {
-                        swal("Error!", response.status, "error");
-                        $('.cartdata').load(location.href + " .cartdata");
-                    }
+
+<!-- Shop Method End-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<script>
+    $('.wish-list').click(function (e) {
+        e.preventDefault();
+
+        var product_id = $(this).data('product_id');
+        var add_size = $('select[name="size"]').val();
+
+        $.ajax({
+            method: "POST",
+            url: "{% url 'add_wishlist' %}",
+            data: {
+                'product_id': product_id,
+                'add_size': add_size,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function (response) {
+                console.log(response);
+
+                if (response.status === 'No such product found' || response.status === 'Only few quantity available' || response.status === 'Product already in Wishlist') {
+                    swal.fire("Error!", response.status, "error");
+                    $('.cartdata').load(location.href + " .cartdata");
+                } else if (response.status === 'Product added successfully in Wishlist') {
+                    swal.fire("", response.status, "success");
+                    $('.cartdata').load(location.href + " .cartdata");
+                } else if (response.status === 'you are not login please Login to continue') {
+                    swal.fire("", response.status, "warning");
+                    $('.cartdata').load(location.href + " .cartdata");
+                } else if (response.status === 'Sorry! this variant not available') {
+                    swal.fire("", response.status, "warning");
+                    $('.cartdata').load(location.href + " .cartdata");
+                } else {
+                    swal("Error!", response.status, "error");
+                    $('.cartdata').load(location.href + " .cartdata");
                 }
-            });
+            }
         });
-    </script>
-    
+    });
+</script>
+
 
 
 {% endblock content %}

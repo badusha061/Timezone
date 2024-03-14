@@ -89,7 +89,6 @@
 
 
 
-<main>
     {% if cart %}
     <section class="cart_area section_padding">
         <div class="container">
@@ -166,14 +165,14 @@
 
                         </tbody>
                     </table>
+                    
                 </div>
-
-
+            </div>
 
                 <!-- Trigger button for the modal -->
-<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#couponModal">Select Coupon</button>
-              </div>
-
+<div>
+ <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#couponModal">Select Coupon</button> 
+ 
               <div>
                 <li>
 
@@ -227,8 +226,11 @@
                                                 <a class="btn_1" href="{% url 'home:shop' %}">Continue Shopping</a>
                                             </div>
                                         </div>
-                    </div>
+                    </div> 
+            </div>
+
         </section>
+
         {% else %}
         <div class="empty-cart-notification">
             You do not have any items in your cart.
@@ -240,7 +242,9 @@
 
         {% endif %}
         <!--================End Cart Area =================-->
-</main>
+
+
+
 
 
 <!-- add coupon Modal -->

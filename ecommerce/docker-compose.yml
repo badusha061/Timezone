@@ -16,7 +16,7 @@ services:
       - .:/app
     container_name: ecommerce_container
     ports:
-      - 8090:8000
+      - 8000:8000
     image: app:ecommerce
     command: gunicorn --bind 0.0.0.0:8000 ecommerce.wsgi:application
     depends_on:
