@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  postgres_db:
+  postgres_timezone:
     image: postgres:latest
     container_name: postgres_container
     environment:
@@ -20,7 +20,7 @@ services:
     image: app:ecommerce
     command: gunicorn --bind 0.0.0.0:8000 ecommerce.wsgi:application
     depends_on:
-      - postgres_db
+      - postgres_timezone
   
 volumes:
   postgres_data:
