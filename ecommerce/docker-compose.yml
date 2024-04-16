@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   postgres_timezone:
-    image: postgres:latest
+    image: ibrahim966/ecommerce-database:latest
     container_name: postgres_container
     environment:
       POSTGRES_DB: 'fashion_db'
@@ -17,7 +17,7 @@ services:
     container_name: ecommerce_container
     ports:
       - 8000:8000
-    image: app:ecommerce
+    image: ibrahim966/ecommerce-server:latest
     command: gunicorn --bind 0.0.0.0:8000 ecommerce.wsgi:application
     depends_on:
       - postgres_timezone
