@@ -2,6 +2,9 @@
 
 from pathlib import Path
 import os
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,9 +46,9 @@ INSTALLED_APPS = [
     'checkout',
     'coupon',
     'wishlist',
-    'banner'
-   
-    
+    'banner',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -97,6 +100,20 @@ DATABASES = {
         'PORT': '5432',           
     }
 }
+
+
+#cloudanary set up
+# cloudinary.config(
+#     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+#     api_key=os.getenv('CLOUDINARY_API_KEY'),
+#     api_secret=os.getenv('CLOUDINARY_API_SECRET')
+# )
+
+cloudinary.config(
+    cloud_name="dzvxebtnl",
+    api_key="189728223734912",
+    api_secret="Pq1NeuL1E4k0Os1BWFlJEdOlh5c"
+)
 
 
 
@@ -196,3 +213,21 @@ EMAIL_HOST_USER='ibrahimbrocamp@gmail.com'
 EMAIL_HOST_PASSWORD='hcac vsft tosi fpgq'
 
 EMAIL_USE_TLS=True
+
+
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+#     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+#     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+# }
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': "dzvxebtnl",
+    'API_KEY': "189728223734912",
+    'API_SECRET': "Pq1NeuL1E4k0Os1BWFlJEdOlh5c",
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
