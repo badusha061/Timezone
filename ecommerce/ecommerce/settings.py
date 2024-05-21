@@ -89,10 +89,10 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fashion_db',
-        'USER': 'fashion_user',
-        'PASSWORD': 'fashion_user123',
-        'HOST': 'postgres_db',  
+        'NAME': 'timezone1',
+        'USER': 'postgres',
+        'PASSWORD': '123',
+        'HOST': 'localhost',  
         'PORT': '5432',           
     }
 }
@@ -151,7 +151,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_PORT=587
-EMAIL_HOST_USER='ibrahimbrocamp@gmail.com'
-EMAIL_HOST_PASSWORD='hcac vsft tosi fpgq'
-
+EMAIL_HOST_USER='feewock0@gmail.com'
+EMAIL_HOST_PASSWORD='ummc cfma rmeh khcr'
 EMAIL_USE_TLS=True

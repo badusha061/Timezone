@@ -125,6 +125,13 @@ def register_views(request):
                     print(referrer)
                     # creating user
                     new_user = Customer.objects.create_user(username=username , email= email , password=password1 , gender = gender)
+                    print('user created',new_user)
+                    print('user created',new_user)
+                    print('user created',new_user)
+                    print('user created',new_user)
+                    print('user created',new_user)
+                    print('user created',new_user)
+
                     new_user.refferal_code   = generate_referral_code()
                     new_user.referrer = referrer
                     new_user.save()
@@ -139,8 +146,16 @@ def register_views(request):
                         wallet.save()
 
                     user_otp=random.randint(100000,999999)
+                    print('user send otp',user_otp)
+                    print('user send otp',user_otp)
+                    print('user send otp',user_otp)
+                    print('user send otp',user_otp)
+                    print('user send otp',user_otp)
+                    print('user send otp',user_otp)
+
                     request.session['otp']=user_otp
                     mess=f'Hello \t{new_user.username},\nYour OTP to verify your account for time zone  is {user_otp}\n Thanks You!'
+                    print('send all otp and  into mail')
                     send_mail(
                             "Welcome to Time Zone , verify your Email",
                             mess,
