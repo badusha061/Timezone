@@ -3,6 +3,15 @@
 from pathlib import Path
 import os
 
+import environ
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -44,9 +53,11 @@ INSTALLED_APPS = [
     'checkout',
     'coupon',
     'wishlist',
-    'banner'
+    'banner',
+
+    'cloudinary',
+    'cloudinary_storage',
    
-    
 ]
 
 MIDDLEWARE = [
@@ -88,14 +99,17 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 # settings.py
 
+
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'timezone',
-        'USER': 'postgres',
-        'PASSWORD': '123',
-        'HOST': 'localhost',  
-        'PORT': '5432',           
+        'ENGINE':'django.db.backends.postgresql',
+        'NAME': env('DATABASE_NAME'),
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': env('DATABASE_HOST'),  
+        'PORT': env('DATABASE_PORT'),           
     }
 }
 
@@ -153,6 +167,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST='smtp.gmail.com'
 EMAIL_PORT=587
-EMAIL_HOST_USER='feewock0@gmail.com'
-EMAIL_HOST_PASSWORD='ummc cfma rmeh khcr'
+EMAIL_HOST_USER=env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD=env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS=True
+
+
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': env('CLOUD_NAME'),
+    'API_KEY': env('API_KEY'),
+    'API_SECRET': env('API_SECRET'),
+}
+
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+
